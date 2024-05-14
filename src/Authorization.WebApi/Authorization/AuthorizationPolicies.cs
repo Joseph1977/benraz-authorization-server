@@ -29,6 +29,41 @@ namespace Authorization.WebApi.Authorization
         /// Execute job policy.
         /// </summary>
         public const string JOB_EXECUTE = "job-execute";
+
+        /// <summary>
+        /// Read claims policy.
+        /// </summary>
+        public const string CLAIM_READ = "claim-read";
+
+        /// <summary>
+        /// Add claim policy.
+        /// </summary>
+        public const string CLAIM_ADD = "claim-add";
+
+        /// <summary>
+        /// Delete claim policy.
+        /// </summary>
+        public const string CLAIM_DELETE = "claim-delete";
+
+        /// <summary>
+        /// Read roles policy.
+        /// </summary>
+        public const string ROLE_READ = "role-read";
+
+        /// <summary>
+        /// Add role policy.
+        /// </summary>
+        public const string ROLE_ADD = "role-add";
+
+        /// <summary>
+        /// Update role policy.
+        /// </summary>
+        public const string ROLE_UPDATE = "role-update";
+
+        /// <summary>
+        /// Delete role policy.
+        /// </summary>
+        public const string ROLE_DELETE = "role-delete";
     }
 }
 

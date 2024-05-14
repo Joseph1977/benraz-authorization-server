@@ -14,6 +14,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Logs\**" />
+	  <Content Remove="Logs\**" />
+	  <EmbeddedResource Remove="Logs\**" />
+	  <None Remove="Logs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
@@ -33,6 +40,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Authorization.Domain\Authorization.Domain.csproj" />
 		<ProjectReference Include="..\Authorization.EF\Authorization.EF.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Filters\" />
+	  <Folder Include="Models\Claims\" />
+	  <Folder Include="Models\Roles\" />
 	</ItemGroup>
 
 </Project>

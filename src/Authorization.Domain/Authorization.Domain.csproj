@@ -5,7 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Benraz.Infrastructure.Authorization" Version="1.0.2" />
     <PackageReference Include="Benraz.Infrastructure.Common" Version="1.0.2" />
+    <PackageReference Include="Benraz.Infrastructure.Domain" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Claims\" />
+    <Folder Include="Roles\" />
   </ItemGroup>
 	
 </Project>

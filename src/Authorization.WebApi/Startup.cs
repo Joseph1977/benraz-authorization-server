@@ -209,6 +209,16 @@ namespace Authorization.WebApi
                         AuthorizationPolicies.SETTINGS_DELETE,
                         AuthorizationClaims.SETTINGS_DELETE);
 
+                    options.AddClaimsPolicy(
+                        AuthorizationPolicies.CLAIM_READ, 
+                        AuthorizationClaims.CLAIM_READ);
+                    options.AddClaimsPolicy(
+                        AuthorizationPolicies.CLAIM_ADD, 
+                        AuthorizationClaims.CLAIM_ADD);
+                    options.AddClaimsPolicy(
+                        AuthorizationPolicies.CLAIM_DELETE, 
+                        AuthorizationClaims.CLAIM_DELETE);
+
                     options.AddPolicy(
                         AuthorizationPolicies.JOB_EXECUTE,
                         builder => builder

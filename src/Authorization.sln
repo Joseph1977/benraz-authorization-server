@@ -1,19 +1,22 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Domain", "Authorization.Domain\Authorization.Domain.csproj", "{832514E9-4A47-4E9A-81D1-252524552E59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.EF", "Authorization.EF\Authorization.EF.csproj", "{9D5651B7-250F-4C61-96CF-BD6CDD563B80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.EF", "Authorization.EF\Authorization.EF.csproj", "{9D5651B7-250F-4C61-96CF-BD6CDD563B80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.WebApi", "Authorization.WebApi\Authorization.WebApi.csproj", "{E718C333-B766-4B73-85C0-5AEA7C32337B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.WebApi", "Authorization.WebApi\Authorization.WebApi.csproj", "{E718C333-B766-4B73-85C0-5AEA7C32337B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Domain.Tests", "Authorization.Domain.Tests\Authorization.Domain.Tests.csproj", "{CD5DF43C-0D29-4680-9EEF-3B73A104AA56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Domain.Tests", "Authorization.Domain.Tests\Authorization.Domain.Tests.csproj", "{CD5DF43C-0D29-4680-9EEF-3B73A104AA56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.EF.Tests", "Authorization.EF.Tests\Authorization.EF.Tests.csproj", "{72125D62-B75B-44D1-B5F0-488667A96695}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.EF.Tests", "Authorization.EF.Tests\Authorization.EF.Tests.csproj", "{72125D62-B75B-44D1-B5F0-488667A96695}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.WebApi.IntegrationTests", "Authorization.WebApi.IntegrationTests\Authorization.WebApi.IntegrationTests.csproj", "{82FCA00A-8C2B-437E-90D2-CF655B4C382A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.WebApi.IntegrationTests", "Authorization.WebApi.IntegrationTests\Authorization.WebApi.IntegrationTests.csproj", "{82FCA00A-8C2B-437E-90D2-CF655B4C382A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Infrastructure", "Authorization.Infrastructure\Authorization.Infrastructure.csproj", "{F97E580E-C04B-4701-B4B0-A3DD973C6F91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Infrastructure.Tests", "Authorization.Infrastructure.Tests\Authorization.Infrastructure.Tests.csproj", "{72C68756-1B48-40D2-9BE0-953212C4546D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +48,14 @@ Global
 		{82FCA00A-8C2B-437E-90D2-CF655B4C382A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82FCA00A-8C2B-437E-90D2-CF655B4C382A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82FCA00A-8C2B-437E-90D2-CF655B4C382A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F97E580E-C04B-4701-B4B0-A3DD973C6F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F97E580E-C04B-4701-B4B0-A3DD973C6F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F97E580E-C04B-4701-B4B0-A3DD973C6F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F97E580E-C04B-4701-B4B0-A3DD973C6F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C68756-1B48-40D2-9BE0-953212C4546D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C68756-1B48-40D2-9BE0-953212C4546D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C68756-1B48-40D2-9BE0-953212C4546D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C68756-1B48-40D2-9BE0-953212C4546D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +64,3 @@ Global
 		SolutionGuid = {440022A9-942B-4ACD-B0E7-FD86163AB061}
 	EndGlobalSection
 EndGlobal
-
-
-
