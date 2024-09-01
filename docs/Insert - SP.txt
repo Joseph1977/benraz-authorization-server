@@ -1,0 +1,60 @@
+
+USE [Benraz.Authorization]
+GO
+/****** Object:  StoredProcedure [dbo].[RoleInsert]    Script Date: 12/4/2020 8:52:50 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[RoleInsert] (
+      @_RoleId uniqueidentifier
+	  ,@_Name nvarchar(max)
+	  ,@_NormalizedName nvarchar(max)
+	  ,@_ConcurrencyStamp nvarchar(max))
+AS
+BEGIN					 
+   IF NOT EXISTS ( SELECT * FROM [dbo].[Roles] 
+		             WHERE [Name] = @_Name)
+   BEGIN     
+
+		INSERT INTO [dbo].[Roles]
+			   ([RoleId]
+			   ,[Name]
+			   ,[NormalizedName]
+			   ,[ConcurrencyStamp])
+		 VALUES
+			   (@_RoleId
+			   ,@_Name
+			   ,@_NormalizedName
+			   ,@_ConcurrencyStamp)	 
+
+   END
+END
+
+
+USE [Benraz.Authorization]
+GO
+/****** Object:  StoredProcedure [dbo].[RoleClaim]    Script Date: 12/4/2020 8:52:48 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[RoleClaim] (
+      @_ClaimId uniqueidentifier
+	  ,@_CreateTimeUtc datetime2(7)
+	  ,@_UpdateTimeUtc datetime2(7)
+	  ,@_Type nvarchar(max)
+	  ,@_Value nvarchar(max))
+AS
+BEGIN					 
+   IF NOT EXISTS ( SELECT * FROM [dbo].[Claims] 
+		             WHERE [Value] = @_Value)
+   BEGIN     
+	 INSERT INTO [dbo].[Claims] ([ClaimId], [CreateTimeUtc], [UpdateTimeUtc], [Type], [Value]) 
+     VALUES (@_ClaimId, @_CreateTimeUtc, @_UpdateTimeUtc, @_Type , @_Value)
+   END
+END
+
+
