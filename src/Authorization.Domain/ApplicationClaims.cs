@@ -179,6 +179,11 @@ namespace Authorization.Domain
         /// Exchange token claim.
         /// </summary>
         public const string TOKEN_EXCHANGE = "authorization-token-exchange";
+
+        /// <summary>
+        /// Validate mfa code to get token for set password claim.
+        /// </summary>
+        public const string PROFILE_MFA_TOKEN = "authorization-profile-mfa-token";
     }
 }
 

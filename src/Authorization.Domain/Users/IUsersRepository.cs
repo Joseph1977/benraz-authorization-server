@@ -14,13 +14,20 @@ namespace Authorization.Domain.Users
         /// <param name="query">Query.</param>
         /// <returns>Users page.</returns>
         public Task<Page<User>> GetPageAsync(UsersQuery query);
-        
+
         /// <summary>
         /// Returns user by identifier.
         /// </summary>
         /// <param name="id">User identifier.</param>
         /// <returns>User.</returns>
         public Task<User> GetByIdAsync(string id);
+
+        /// <summary>
+        /// Get user by email.
+        /// </summary>
+        /// <param name="email">Email.</param>
+        /// <returns>User.</returns>
+        public Task<User> GetByEmail(string email, bool? includeEmployee = false);
     }
 }
 

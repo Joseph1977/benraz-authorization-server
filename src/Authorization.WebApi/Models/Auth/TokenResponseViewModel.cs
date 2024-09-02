@@ -8,12 +8,12 @@ namespace Authorization.WebApi.Models.Auth
         /// <summary>
         /// Access token.
         /// </summary>
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
         /// <summary>
         /// Error.
         /// </summary>
-        public string Error { get; set; }
+        public string? Error { get; set; }
 
         /// <summary>
         /// Creates view model with access token.

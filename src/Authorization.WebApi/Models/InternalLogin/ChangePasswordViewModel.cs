@@ -12,20 +12,20 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// User identifier.
         /// </summary>
         [Required]
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         /// <summary>
         /// Password.
         /// </summary>
         [Required]
-        public string OldPassword { get; set; }
+        public string OldPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// Password.
         /// </summary>
         [Required]
         [RegularExpression(UserPassword.PASSWORD_REGEX)]
-        public string NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
     }
 }
 

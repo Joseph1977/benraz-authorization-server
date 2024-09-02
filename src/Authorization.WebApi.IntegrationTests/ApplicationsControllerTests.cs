@@ -1,7 +1,6 @@
 using Authorization.Domain.Applications;
 using Authorization.Domain.ApplicationTokens;
 using Authorization.WebApi.Models.Applications;
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using System.Text.Json;
 using NUnit.Framework;
@@ -88,7 +87,7 @@ namespace Authorization.WebApi.IntegrationTests
                 Audience = "NewAudience"
             };
             var httpContent = new StringContent(
-                sonSerializer.Serialize(applicationViewModel), Encoding.UTF8, "application/json");
+               JsonSerializer.Serialize(applicationViewModel), Encoding.UTF8, "application/json");
 
             var response = await HttpClient.PutAsync($"/v1/Applications/{application.Id}", httpContent);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -182,11 +181,11 @@ namespace Authorization.WebApi.IntegrationTests
             }
         }
 
-        private async Task<Application> AddDefaultApplicationAsync()
+        private async Task<Domain.Applications.Application> AddDefaultApplicationAsync()
         {
             using (var dbContext = CreateDbContext())
             {
-                var application = new Application
+                var application = new Domain.Applications.Application
                 {
                     Name = "Application-001",
                     Audience = "Audience-002"
@@ -211,5 +210,3 @@ namespace Authorization.WebApi.IntegrationTests
         }
     }
 }
-
-

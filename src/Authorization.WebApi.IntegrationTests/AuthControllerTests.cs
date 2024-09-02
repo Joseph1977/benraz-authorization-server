@@ -1,9 +1,7 @@
-using Authorization.Domain.Applications;
 using Authorization.Domain.ApplicationTokens;
 using Authorization.Domain.SsoConnections;
 using Authorization.WebApi.Models.Auth;
 using Authorization.WebApi.Models.Users;
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using NUnit.Framework;
 using Benraz.Infrastructure.Domain.Authorization;
@@ -108,11 +106,11 @@ namespace Authorization.WebApi.IntegrationTests
             }
         }
 
-        private async Task<Application> AddDefaultApplicationAsync()
+        private async Task<Domain.Applications.Application> AddDefaultApplicationAsync()
         {
             using (var dbContext = CreateDbContext())
             {
-                var application = new Application
+                var application = new Domain.Applications.Application
                 {
                     Name = "Application-001",
                     Audience = "Audience-002"
@@ -156,5 +154,3 @@ namespace Authorization.WebApi.IntegrationTests
         }
     }
 }
-
-

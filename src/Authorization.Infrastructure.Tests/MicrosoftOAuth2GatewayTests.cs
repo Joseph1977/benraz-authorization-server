@@ -59,10 +59,10 @@ namespace Authorization.Infrastructure.Tests
                 Code = "OAQABAAIAAABeAFzDwllzTYGDLh_qYbH8tTh0lTwgkUszmvxUXxsFJzUcQ15yCXtgN0T0hOovi1QQ1VdBoZ3ZnVTvhefB-PPXPvu42ASWt39dbZVC8KvD7N8LNB2GH4hZUjUyX974bIX6z97qYwk93lFczb1IUdXBLZ_iWiETXzGZQq3vQIC3kkxdhfhALcumd3jsDlVTgGLWPfVU3dHSejLfzy97_XHvKDWf4As_5zfPxfWKm9d2vBZkBtQ48oA01OzcOBhsmxQKdTr6jrSWNsLtDYj047yCGbVLrKD0W5CcG-nEAI4k25uhn0XQOPMkwP__JQoZeZW-uvwNB_y4K9MJEEBYQUAFed4zG2TEXVAC7FWZrU8cZzyQWf_GQze7dXVut1qID3xygOozt2v2pCbgOYxE97kdFofA6DFR_hduuvYH4mLkS5frfN39SpAKFI6Hz0jHb7kSzHQmbrR4v2mZ28uNoEYTgWJRqE-Y60OUZrACbxHQ2rMby3ZAFkl1JBmHO70eZsiQB9f1COWOAK4kXrVktsWb1cTIho9uxjyRLQmgHRarrD8cgXNy3TKU0Q6aLR2ui8iTc-xyP9a4JyGxEak56vzPV5OY0B6cUYl_7_IkRXvYyl1BCP-AIy6WHlHMfl0DqQ289Rbhw629vKj908dwui06YjIX8McV8UNdwb8mqKj5n9qUl58mT3QoxpPhV1VA4BpJu6Oiiu9iDDNiHtFQqBoEXodUIUh3MD6q2m7pDdTcVQ4wOeQGgvL2jc2e_n8MuUKiNliKGzMIE1R_Z3XuyvaJE-IetcID1k2D5bWq1bt1ECr0lBeRsCBp65j-FSJ5e9KqnhDiHerkniD97lJEzAVUraoyrzTykeN6oy6nU739riND-NNQiB1uxFXivSvHSpLrae8cm-0dPOV3ks1JzjYVy4WxlBK8WLoaqViyxrHEXRLwn5EtfKMf9006GdzeM432ndGZPm4K1RXFsOsI51calf6FwHMVIr8zkw2pFxdPAskXB2j23lspO_AWsFL-fRVDn5ih-N6-ohXN_4fBmXktKTNFp8vF4Tuif1SBuaD55JJkVQBjrZsHtI9fDfP9MaIpN7XtfNg1J7YqmSsEJYwYLR_2i84VdbAYchQQ2_cXNgQkZtV_-967RD8ABHpqZdd4wA3KvAhcO71Avq5Mjrs2ij5nUXPPgY58y4diN3WrRFXepAbjqXVuQ46xMx3zkmvQx0Mi_TiEIq5m1Li6jFmnYzogJ9wkaZEzAx41PSMTtCAA",
             };
 
-            var response = await _gateway.SendAsync(request);
+            var token = await _gateway.SendAsync(request);
 
-            response.Should().NotBeNull();
-            response.AccessToken.Should().NotBeNullOrEmpty();
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrEmpty();
         }
 
         [Test]
@@ -78,10 +78,10 @@ namespace Authorization.Infrastructure.Tests
                 Password = "password"
             };
 
-            var response = await _gateway.SendAsync(request);
+            var token = await _gateway.SendAsync(request);
 
-            response.Should().NotBeNull();
-            response.AccessToken.Should().NotBeNullOrEmpty();
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrEmpty();
         }
     }
 }

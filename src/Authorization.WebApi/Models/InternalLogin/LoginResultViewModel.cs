@@ -10,17 +10,17 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// <summary>
         /// User identifier.
         /// </summary>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// Access token.
         /// </summary>
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
         /// <summary>
         /// Error.
         /// </summary>
-        public string Error { get; set; }
+        public string? Error { get; set; }
 
         /// <summary>
         /// Error reason code.
@@ -30,7 +30,12 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// <summary>
         /// Callback URL.
         /// </summary>
-        public string CallbackUrl { get; set; }
+        public string? CallbackUrl { get; set; }
+
+        /// <summary>
+        /// Mfa required.
+        /// </summary>
+        public bool MfaRequired { get; set; }
     }
 }
 

@@ -11,13 +11,13 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// User identifier.
         /// </summary>
         [Required] 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         /// <summary>
         /// Email confirmation token.
         /// </summary>
         [Required] 
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
     }
 }
 

@@ -1,17 +1,17 @@
-using System;
 using Authorization.Domain.Users;
 using Authorization.WebApi.Models.Users;
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 using NUnit.Framework;
 using Benraz.Infrastructure.Common.Paging;
 using Benraz.Infrastructure.Domain.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Authorization.WebApi.IntegrationTests
 {
@@ -92,7 +92,11 @@ namespace Authorization.WebApi.IntegrationTests
             var response = await HttpClient.PutAsync($"/v1/Users/{user.Id}", httpContent);
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-            DBContext.Users.Find(user.Id).FullName.Should().Be("UserName002");
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.FullName.Should().Be("UserName002");
         }
 
         [Test]
@@ -119,7 +123,8 @@ namespace Authorization.WebApi.IntegrationTests
             var responseContentString = await response.Content.ReadAsStringAsync();
             var userStatusCode = JsonSerializer.Deserialize<UserStatusCode>(responseContentString);
 
-            userStatusCode.Should().NotBeNull();
+            userStatusCode.Should().NotBe(default(UserStatusCode), "because the user status code should be a valid enum value and not the default.");
+
         }
 
         [Test]
@@ -134,7 +139,12 @@ namespace Authorization.WebApi.IntegrationTests
 
             var responseContentString = await response.Content.ReadAsStringAsync();
             responseContentString.Should().BeNullOrEmpty();
-            DBContext.Users.Find(user.Id).StatusCode.Should().BeEquivalentTo(1);
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.StatusCode.Should().Be(UserStatusCode.Active, "because the user's status code should be 1");
+
         }
 
         [Test]
@@ -149,7 +159,11 @@ namespace Authorization.WebApi.IntegrationTests
 
             var responseContentString = await response.Content.ReadAsStringAsync();
             responseContentString.Should().BeNullOrEmpty();
-            DBContext.Users.Find(user.Id).StatusCode.Should().BeEquivalentTo(3);
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.StatusCode.Should().Be(UserStatusCode.Blocked, "because the user's status code should be 3");
         }
 
         [Test]
@@ -262,7 +276,11 @@ namespace Authorization.WebApi.IntegrationTests
             var responseContentString = await response.Content.ReadAsStringAsync();
             responseContentString.Should().BeNullOrEmpty();
 
-            DBContext.Users.Find(user.Id).EmailConfirmed.Should().BeTrue();
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.EmailConfirmed.Should().BeTrue();
         }
 
         [Test]
@@ -291,7 +309,11 @@ namespace Authorization.WebApi.IntegrationTests
             var responseContentString = await response.Content.ReadAsStringAsync();
             responseContentString.Should().BeNullOrEmpty();
 
-            DBContext.Users.Find(user.Id).PhoneNumberConfirmed.Should().BeTrue();
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.PhoneNumberConfirmed.Should().BeTrue();
         }
 
         [Test]
@@ -319,8 +341,40 @@ namespace Authorization.WebApi.IntegrationTests
 
             var responseContentString = await response.Content.ReadAsStringAsync();
             responseContentString.Should().BeNullOrEmpty();
-            DBContext.Users.Find(user.Id).LockoutEnd.Should().BeNull();
-            DBContext.Users.Find(user.Id).AccessFailedCount.Should().Be(0);
+
+            var retrievedUser = await DBContext.Users.FindAsync(user.Id);
+
+            // Assert: Verify the result
+            retrievedUser.Should().NotBeNull("because a user with the given ID should exist in the database");
+            retrievedUser.LockoutEnd.Should().BeNull();
+            retrievedUser = await DBContext.Users.FindAsync(user.Id);
+            retrievedUser.AccessFailedCount.Should().Be(0);
+        }
+
+        [Test]
+        public async Task CanGetUserInfoByIdAsync()
+        {
+            var users = await AddDefaultUsersAsync();
+            var user = users.ToList()[0];
+
+            var response = await HttpClient.GetAsync($"/v1/Users/{user.Id}/userInfoById");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            
+            var viewModel = await GetResponseAsync<UserOpenIdViewModel>(response);
+            viewModel.Email.Should().BeEquivalentTo("User@Email-001");
+        }
+
+        [Test]
+        public async Task CanGetUserInfoByEmailAsync()
+        {
+            var users = await AddDefaultUsersAsync();
+            var user = users.ToList()[0];
+
+            var response = await HttpClient.GetAsync($"/v1/Users/userInfoByEmail?email={user.Email}");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var viewModel = await GetResponseAsync<UserOpenIdViewModel>(response);
+            viewModel.Email.Should().BeEquivalentTo("User@Email-001");
         }
 
         private async Task<IEnumerable<IdentityUserClaim<string>>> AddDefaultUserClaimsAsync(string userId)
@@ -383,6 +437,7 @@ namespace Authorization.WebApi.IntegrationTests
                     new User
                     {
                         UserName = "UserName-001",
+                        FullName = "User name",
                         Email = "User@Email-001",
                         PhoneNumber = "222-222",
                         StatusCode = UserStatusCode.PaymentServiceSuspended,
@@ -391,6 +446,7 @@ namespace Authorization.WebApi.IntegrationTests
                     new User
                     {
                         UserName = "UserName-002",
+                        FullName = "User name",
                         Email = "User@Email-002",
                         PhoneNumber = "001-001",
                         StatusCode = UserStatusCode.Active,

@@ -54,7 +54,7 @@ namespace Authorization.Infrastructure.Gateways.MicrosoftGraph
             {
                 var requestUri = new Uri(new Uri(_settings.BaseUrl), _settings.MemberGroupsEndpoint);
                 var requestContent = new StringContent(
-                    JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+                   JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 var responseMessage = await httpClient.PostAsync(requestUri, requestContent);
                 var responseText = await responseMessage.Content.ReadAsStringAsync();
 

@@ -15,7 +15,7 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// URL value.
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
     }
 }
 

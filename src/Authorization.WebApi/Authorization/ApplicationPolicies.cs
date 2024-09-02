@@ -174,6 +174,11 @@ namespace Authorization.WebApi.Authorization
         /// Exchange token policy.
         /// </summary>
         public const string TOKEN_EXCHANGE = "token-exchange";
+
+        /// <summary>
+        /// Validate mfa code to get token for set password policy.
+        /// </summary>
+        public const string INTERNAL_LOGIN_MFA_TOKEN = "internal-login-mfa-token";
     }
 }
 

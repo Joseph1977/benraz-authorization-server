@@ -1,13 +1,12 @@
-using ErpMaintenance.WebApi.IntegrationTests;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using Authorization.Domain.Claims;
-using System.Collections.Generic;
 using Authorization.WebApi.Models.Claims;
 using FluentAssertions;
+using System.Text.Json;
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Authorization.WebApi.IntegrationTests
 {
@@ -69,7 +68,7 @@ namespace Authorization.WebApi.IntegrationTests
 
         private async Task<IdentityClaim> AddDefaultClaimAsync()
         {
-            using(var dbContext = CreateDbContext())
+            using (var dbContext = CreateDbContext())
             {
                 var claim = new IdentityClaim
                 {

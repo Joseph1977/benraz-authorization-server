@@ -1,15 +1,10 @@
-namespace Authorization.Domain.Emails
+namespace Authorization.Domain.Emails.Confirmation
 {
     /// <summary>
     /// Confirmation email model.
     /// </summary>
-    public class ConfirmationEmailModel
+    public class ConfirmationEmailModel : EmailModel
     {
-        /// <summary>
-        /// To email address.
-        /// </summary>
-        public string To { get; set; }
-
         /// <summary>
         /// User full name.
         /// </summary>
@@ -21,5 +16,3 @@ namespace Authorization.Domain.Emails
         public string ConfirmEmailLink { get; set; }
     }
 }
-
-

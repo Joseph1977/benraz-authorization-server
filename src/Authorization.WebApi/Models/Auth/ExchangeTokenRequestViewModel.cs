@@ -15,7 +15,7 @@ namespace Authorization.WebApi.Models.Auth
         /// <summary>
         /// Access token to exchange.
         /// </summary>
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
     }
 }
 

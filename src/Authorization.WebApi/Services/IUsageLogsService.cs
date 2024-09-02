@@ -15,7 +15,7 @@ namespace Authorization.WebApi.Services
         /// <param name="userName">User name.</param>
         /// <param name="message">Additional message.</param>
         /// <returns>Task.</returns>
-        Task LogUsageAsync(HttpContext httpContext, string userName = null, string message = null);
+        Task LogUsageAsync(HttpContext httpContext, string? userName = null, string? message = null);
     }
 }
 

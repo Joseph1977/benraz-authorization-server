@@ -3,7 +3,7 @@ using Authorization.Infrastructure.Gateways.MicrosoftGraph;
 using Authorization.Infrastructure.Gateways.MicrosoftGraph.Messages;
 using Authorization.Infrastructure.Gateways.MicrosoftOAuth2;
 using Authorization.Infrastructure.Gateways.MicrosoftOAuth2.Messages;
-using MoreLinq;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,14 +19,17 @@ namespace Authorization.Domain.SsoServices
     public class MicrosoftSsoService : SsoServiceBase, ISsoService
     {
         private readonly IMicrosoftGraphGateway _microsoftGraphGateway;
+        private readonly ILogger<MicrosoftSsoService> _logger;
 
         /// <summary>
         /// Creates service.
         /// </summary>
         /// <param name="microsoftGraphGateway">Microsoft graph gateway.</param>
-        public MicrosoftSsoService(IMicrosoftGraphGateway microsoftGraphGateway)
+        public MicrosoftSsoService(IMicrosoftGraphGateway microsoftGraphGateway,
+            ILogger<MicrosoftSsoService> logger)
         {
             _microsoftGraphGateway = microsoftGraphGateway;
+            _logger = logger;
         }
 
         /// <summary>
@@ -73,8 +76,8 @@ namespace Authorization.Domain.SsoServices
                 Code = code
             };
 
-            var response = await CreateOAuth2Gateway(ssoConnection).SendAsync(request);
-            var authorizationResult = await CreateAuthorizationResultAsync(response);
+            var token = await CreateOAuth2Gateway(ssoConnection).SendAsync(request);
+            var authorizationResult = await CreateAuthorizationResultAsync(token);
 
             return authorizationResult;
         }
@@ -99,8 +102,8 @@ namespace Authorization.Domain.SsoServices
                 Password = password
             };
 
-            var response = await CreateOAuth2Gateway(ssoConnection).SendAsync(request);
-            var authorizationResult = await CreateAuthorizationResultAsync(response);
+            var token = await CreateOAuth2Gateway(ssoConnection).SendAsync(request);
+            var authorizationResult = await CreateAuthorizationResultAsync(token);
 
             return authorizationResult;
         }
@@ -201,7 +204,7 @@ namespace Authorization.Domain.SsoServices
                 AddClaim(claims, ClaimTypes.Name, nameClaim.Value);
             }
 
-            var emailClaim = token.Claims.FirstOrDefault(x => x.Type == "email");
+            var emailClaim = token.Claims.FirstOrDefault(x => x.Type == "email" || x.Type == "upn");
             if (emailClaim != null)
             {
                 AddClaim(claims, ClaimTypes.Email, emailClaim.Value);

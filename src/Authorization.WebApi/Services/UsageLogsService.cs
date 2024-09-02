@@ -39,7 +39,7 @@ namespace Authorization.WebApi.Services
         /// <param name="userName">User name.</param>
         /// <param name="message">Additional message.</param>
         /// <returns>Task.</returns>
-        public async Task LogUsageAsync(HttpContext httpContext, string userName = null, string message = null)
+        public async Task LogUsageAsync(HttpContext httpContext, string? userName = null, string? message = null)
         {
             if (!_drChecker.IsActiveDR())
             {
@@ -63,17 +63,17 @@ namespace Authorization.WebApi.Services
             }
         }
 
-        private string GetUserId(HttpContext httpContext)
+        private string? GetUserId(HttpContext httpContext)
         {
             return httpContext.User?.Claims?.FirstOrDefault(x => x.Type == CommonClaimTypes.USER_ID)?.Value;
         }
 
-        private string GetIPAddress(HttpContext httpContext)
+        private string? GetIPAddress(HttpContext httpContext)
         {
             return httpContext.Connection.RemoteIpAddress?.ToString();
         }
 
-        private string GetAction(HttpContext httpContext, string message)
+        private string GetAction(HttpContext httpContext, string? message)
         {
             var action = $"{httpContext.Request.Method} {httpContext.Request.Path}";
             if (!string.IsNullOrEmpty(message))

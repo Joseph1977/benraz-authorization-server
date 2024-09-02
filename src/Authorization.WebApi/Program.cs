@@ -1,5 +1,6 @@
 using Authorization.WebApi.Configuration;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -23,12 +24,15 @@ namespace Authorization.WebApi
         /// <param name="args">Arguments.</param>
         public static void Main(string[] args)
         {
-            Logger logger = null;
+            Logger? logger = null;
             try
             {
                 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? Directory.GetCurrentDirectory();
+
+
                 var config = new ConfigurationBuilder()
-                    .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+                    .SetBasePath(basePath)
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
                     .Build();
@@ -57,7 +61,7 @@ namespace Authorization.WebApi
             return WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(builder =>
                 {
-                    var connectionString = builder.Build().GetConnectionString("Authorization");
+                    var connectionString = GetSqlServerConnectionString(builder);
                     builder.AddDatabaseConfiguration(options => options.UseSqlServer(connectionString));
                 })
                 .UseStartup<Startup>()
@@ -71,16 +75,39 @@ namespace Authorization.WebApi
 
         private static Logger InitLogger(IConfigurationRoot config)
         {
-            var logFolder = config.GetValue<string>("General:LogFolder");
+            string logFolder = config.GetValue<string>("General:LogFolder") ?? ".\\"; // throw new ArgumentNullException(nameof(logFolder));
             InternalLogger.LogFile = Path.Combine(logFolder, "nlog-internal.log");
 
-            var logFactory = NLogBuilder.ConfigureNLog("nlog.config");
-            logFactory.Configuration.Variables["logFolder"] = logFolder;
+            // Use the new recommended setup method
+            var logFactory = NLog.LogManager.Setup()
+                .LoadConfigurationFromFile("nlog.config") // Load configuration from nlog.config file
+                .LoadConfiguration(configBuilder =>
+                {
+                    var loggingConfiguration = configBuilder.Configuration;
+                    loggingConfiguration.Variables["logFolder"] = logFolder;
+                });
 
-            var logger = logFactory.GetCurrentClassLogger();
+            var logger = NLog.LogManager.GetCurrentClassLogger(); // Get the logger after setting up
+
             logger.Info("Starting application...");
 
             return logger;
+        }
+
+        private static string? GetSqlServerConnectionString(IConfigurationBuilder builder)
+        {
+            var connectionString = builder.Build().GetConnectionString("Authorization");
+            var isInjectDbCredentialsToConnectionString =
+                builder.Build().GetValue<bool>("InjectDBCredentialFromEnvironment");
+            if (!isInjectDbCredentialsToConnectionString) 
+                return connectionString;
+
+            var userName = Environment.GetEnvironmentVariable("ASPNETCORE_DB_USERNAME");
+            var password = Environment.GetEnvironmentVariable("ASPNETCORE_DB_PASSWORD");
+            connectionString +=
+                $";User Id={userName};Password={password}";
+
+            return connectionString;
         }
     }
 }

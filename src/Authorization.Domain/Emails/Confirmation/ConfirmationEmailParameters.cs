@@ -1,9 +1,9 @@
-namespace Authorization.Domain.Emails
+﻿namespace Authorization.Domain.Emails.Confirmation
 {
     /// <summary>
-    /// Reset password email model.
+    /// Confirmation email parameters.
     /// </summary>
-    public class ResetPasswordEmailModel
+    public class ConfirmationEmailParameters
     {
         /// <summary>
         /// To email address.
@@ -16,10 +16,8 @@ namespace Authorization.Domain.Emails
         public string UserFullName { get; set; }
 
         /// <summary>
-        /// Reset password link.
+        /// Confirm email link.
         /// </summary>
-        public string ResetPasswordLink { get; set; }
+        public string ConfirmEmailLink { get; set; }
     }
 }
-
-

@@ -310,7 +310,7 @@ namespace Authorization.WebApi.Controllers
                 }
 
                 var callbackUrl = await _authorizationService.CreateSuccessCallbackUrlAsync(
-                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl);
+                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl, provider: provider);
 
                 return callbackUrl;
             }

@@ -5,6 +5,7 @@ using Authorization.EF.Extensions;
 using Authorization.WebApi.Authorization;
 using Authorization.WebApi.Filtes;
 using Authorization.WebApi.Models.InternalLogin;
+using Authorization.WebApi.Models.InternalLogin.Response;
 using Authorization.WebApi.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +13,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Benraz.Infrastructure.Common.AccessControl;
 using Benraz.Infrastructure.Domain.Authorization;
+using Benraz.Infrastructure.Domain.Common;
 using Benraz.Infrastructure.Web.Filters;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Authorization.WebApi.Controllers
 {
@@ -40,6 +44,8 @@ namespace Authorization.WebApi.Controllers
         private readonly IUsageLogsService _usageLogsService;
         private readonly IMapper _mapper;
         private readonly ILogger<InternalLoginController> _logger;
+        private readonly UserActionNotificationsServiceSettings _userActionNotificationsServiceSettings;
+        private readonly AuthorizationServiceSettings _authorizationServiceSettings;
 
         /// <summary>
         /// Creates controller.
@@ -52,6 +58,8 @@ namespace Authorization.WebApi.Controllers
         /// <param name="usageLogsService">Usage logs service.</param>
         /// <param name="mapper">Mapper.</param>
         /// <param name="logger">Logger.</param>
+        /// <param name="userActionNotificationsServiceSettings">User action notifications service settings.</param>
+        /// <param name="authorizationServiceSettings">Authorization service settings.</param>
         public InternalLoginController(
             UserManager<User> userManager,
             IUserStore<User> userStore,
@@ -60,7 +68,9 @@ namespace Authorization.WebApi.Controllers
             Domain.IAuthorizationService authorizationService,
             IUsageLogsService usageLogsService,
             IMapper mapper,
-            ILogger<InternalLoginController> logger)
+            ILogger<InternalLoginController> logger,
+            IOptions<UserActionNotificationsServiceSettings> userActionNotificationsServiceSettings,
+            IOptions<AuthorizationServiceSettings> authorizationServiceSettings)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -70,6 +80,8 @@ namespace Authorization.WebApi.Controllers
             _usageLogsService = usageLogsService;
             _mapper = mapper;
             _logger = logger;
+            _userActionNotificationsServiceSettings = userActionNotificationsServiceSettings.Value;
+            _authorizationServiceSettings = authorizationServiceSettings.Value;
         }
 
         /// <summary>
@@ -102,7 +114,12 @@ namespace Authorization.WebApi.Controllers
                 await _usageLogsService.LogUsageAsync(HttpContext, viewModel.Username, "Token successfully created");
 
                 var callbackUrl = await _authorizationService.CreateSuccessCallbackUrlAsync(
-                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl);
+                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl, viewModel.isMfaVerified, SsoProviderCode.Internal);
+
+                if (_userActionNotificationsServiceSettings.IsLoginNotifyEnabled)
+                {
+                    await _authorizationService.SendUserLoginEmailAsync(viewModel.Username);
+                }
 
                 var resultViewModel = new LoginResultViewModel
                 {
@@ -120,7 +137,8 @@ namespace Authorization.WebApi.Controllers
                 {
                     UserId = ex.UserId,
                     Error = ex.Reason,
-                    ErrorReasonCode = ex.ReasonCode
+                    ErrorReasonCode = ex.ReasonCode,
+                    MfaRequired = ex.MfaRequired
                 };
                 return Ok(resultViewModel);
             }
@@ -266,6 +284,31 @@ namespace Authorization.WebApi.Controllers
         }
 
         /// <summary>
+        /// Get action URL.
+        /// </summary>
+        /// <param name="viewModel">Get action URL view model</param>
+        /// <returns>Action result</returns>
+        [HttpPost("get-action-url")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ServiceFilter(typeof(DRFilterAttribute))]
+        public async Task<IActionResult> GetActionUrlAsync([FromBody] GetActionUrlViewModel viewModel)
+        {
+            await BruteForceProtectAsync();
+
+            var user = await _userManager.FindByNameAsync(viewModel.UserName);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _usersService.GetActionUrlParametersAsync(user.Id, viewModel.ActionType);
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Changes password to a new one.
         /// </summary>
         /// <param name="viewModel">Change password view model.</param>
@@ -373,7 +416,18 @@ namespace Authorization.WebApi.Controllers
                 return BadRequest("Password already been in use");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, viewModel.Code, viewModel.NewPassword);
+            var decodedToken = HttpUtility.UrlDecode(viewModel.Code);
+            _logger.LogInformation($"User {userId} decoded token for set password: {decodedToken}.");
+
+            var isVerificationCodeValid = await _usersService.IsVerificationCodeValidAsync(userId, viewModel.Code, MfaCode.ResetPassword);
+            if (!isVerificationCodeValid)
+            {
+                _logger.LogInformation($"Change password for user {user.Email} failed - invalid code.");
+                return BadRequest("Failed to change password");
+            }
+
+            var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordToken, viewModel.NewPassword);
             if (!result.Succeeded)
             {
                 var errorsString = string.Join(", ", result.Errors.Select(x => x.Code));
@@ -392,16 +446,83 @@ namespace Authorization.WebApi.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Create mfa and send to the user.
+        /// </summary>
+        /// <param name="viewModel">Create mfa view model.</param>
+        /// <returns>Action result.</returns>
+        [HttpPost("mfa")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ServiceFilter(typeof(DRFilterAttribute))]
+        public async Task<IActionResult> CreateMfaAsync([FromBody] CreateMfaViewModel viewModel)
+        {
+            await BruteForceProtectAsync();
+
+            var user = await _userManager.FindByNameAsync(viewModel.UserEmail);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            try
+            {
+                var result = await _usersService.CreateMfaAsync(user, viewModel);
+                if (result == null)
+                    return BadRequest("Not implemented");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while restoring user password.");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get one time token by mfa code.
+        /// </summary>
+        /// <param name="viewModel">Create mfa view model.</param>
+        /// <returns>Action result.</returns>
+        [HttpPost("mfa/token")]
+        [Authorize(ApplicationPolicies.INTERNAL_LOGIN_MFA_TOKEN)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ServiceFilter(typeof(DRFilterAttribute))]
+        public async Task<IActionResult> GetOneTimeTokenByMfaCodeAsync([FromBody] GetTokenByMfaCodeModel viewModel)
+        {
+            await BruteForceProtectAsync();
+
+            var user = await _userManager.FindByNameAsync(viewModel.UserEmail);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            try
+            {
+                var result = await _usersService.GetOneTimeTokenByMfaCodeAsync(user, viewModel);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while restoring user password.");
+                return BadRequest(ex.Message);
+            }
+        }
+
         private Task BruteForceProtectAsync()
         {
             return Task.Delay(INTERNAL_LOGIN_DELAY_MS);
         }
 
-        private string GetContextUserValue(string claimType)
+        private string? GetContextUserValue(string claimType)
         {
             return HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == claimType)?.Value;
         }
     }
 }
-
-

@@ -8,12 +8,12 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Claim type.
         /// </summary>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Claim value.
         /// </summary>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }
 

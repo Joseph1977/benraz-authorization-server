@@ -1,9 +1,11 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.WebApi", "Authorization.WebApi\Authorization.WebApi.csproj", "{ABC98AB2-C6D6-4EE6-B2C0-D5562E1D949F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{044889C7-116E-463B-9E89-D23945A8838C} = {044889C7-116E-463B-9E89-D23945A8838C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.WebApi.IntegrationTests", "Authorization.WebApi.IntegrationTests\Authorization.WebApi.IntegrationTests.csproj", "{0D8C1862-A55B-4829-9E92-110FA5EEDC2D}"
 EndProject
@@ -18,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Infrastructure", "Authorization.Infrastructure\Authorization.Infrastructure.csproj", "{3C61A604-F439-49B8-BB05-F30B3BD78639}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Infrastructure.Tests", "Authorization.Infrastructure.Tests\Authorization.Infrastructure.Tests.csproj", "{7471E710-1703-42C2-9B3C-9E0EBEBA7B45}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Application", "Authorization.Application\Authorization.Application.csproj", "{044889C7-116E-463B-9E89-D23945A8838C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,10 @@ Global
 		{7471E710-1703-42C2-9B3C-9E0EBEBA7B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7471E710-1703-42C2-9B3C-9E0EBEBA7B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7471E710-1703-42C2-9B3C-9E0EBEBA7B45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{044889C7-116E-463B-9E89-D23945A8838C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{044889C7-116E-463B-9E89-D23945A8838C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{044889C7-116E-463B-9E89-D23945A8838C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{044889C7-116E-463B-9E89-D23945A8838C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +73,3 @@ Global
 		SolutionGuid = {B6FEB394-7177-40FA-AFE3-BBC2EA73F9DC}
 	EndGlobalSection
 EndGlobal
-
-

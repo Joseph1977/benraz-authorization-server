@@ -61,10 +61,10 @@ namespace Authorization.EF.Extensions
 
             var oldRoles = await userManager.GetRolesAsync(user);
 
-            var rolesToRemove = oldRoles.ExceptBy(roles, x => x).ToList();
+            var rolesToRemove = oldRoles.Except(roles).ToList();
             await userManager.RemoveFromRolesAsync(user, rolesToRemove);
 
-            var rolesToAdd = roles.ExceptBy(oldRoles, x => x).ToList();
+            var rolesToAdd = roles.Except(oldRoles).ToList();
             await userManager.AddToRolesAsync(user, rolesToAdd);
         }
 

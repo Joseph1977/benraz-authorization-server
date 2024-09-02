@@ -11,7 +11,7 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Name.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Expiration time in UTC.
@@ -21,17 +21,17 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Roles.
         /// </summary>
-        public ICollection<string> Roles { get; set; }
+        public ICollection<string>? Roles { get; set; }
 
         /// <summary>
         /// Claims.
         /// </summary>
-        public ICollection<ApplicationTokenClaimViewModel> Claims { get; set; }
+        public ICollection<ApplicationTokenClaimViewModel>? Claims { get; set; }
 
         /// <summary>
         /// Custom fields.
         /// </summary>
-        public ICollection<ApplicationTokenCustomFieldViewModel> CustomFields { get; set; }
+        public ICollection<ApplicationTokenCustomFieldViewModel>? CustomFields { get; set; }
     }
 }
 

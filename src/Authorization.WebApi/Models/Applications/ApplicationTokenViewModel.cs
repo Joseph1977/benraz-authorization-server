@@ -20,7 +20,7 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Created by.
         /// </summary>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
     }
 }
 

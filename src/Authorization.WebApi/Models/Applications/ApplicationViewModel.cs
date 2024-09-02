@@ -16,12 +16,12 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Application name.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Application audience.
         /// </summary>
-        public string Audience { get; set; }
+        public string? Audience { get; set; }
 
         /// <summary>
         /// Is access token attachment as a cookie enabled.
@@ -31,7 +31,7 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Access token cookie name.
         /// </summary>
-        public string AccessTokenCookieName { get; set; }
+        public string? AccessTokenCookieName { get; set; }
 
         /// <summary>
         /// Is access token attachment as a URL fragment disabled.
@@ -41,12 +41,12 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Access token validity period.
         /// </summary>
-        public string AccessTokenValidityPeriod { get; set; }
+        public string? AccessTokenValidityPeriod { get; set; }
 
         /// <summary>
         /// Name of a user who created the application.
         /// </summary>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         /// <summary>
         /// Create time in UTC.
@@ -56,7 +56,7 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Name of a user who made last changes.
         /// </summary>
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
         /// <summary>
         /// Update time in UTC.
@@ -66,12 +66,12 @@ namespace Authorization.WebApi.Models.Applications
         /// <summary>
         /// Application SSO providers.
         /// </summary>
-        public ICollection<ApplicationSsoConnectionViewModel> SsoConnections { get; set; }
+        public ICollection<ApplicationSsoConnectionViewModel>? SsoConnections { get; set; }
 
         /// <summary>
         /// Application URLs.
         /// </summary>
-        public ICollection<ApplicationUrlViewModel> Urls { get; set; }
+        public ICollection<ApplicationUrlViewModel>? Urls { get; set; }
     }
 }
 

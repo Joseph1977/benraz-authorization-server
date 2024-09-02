@@ -8,12 +8,12 @@ namespace Authorization.WebApi.Models.Auth
         /// <summary>
         /// Key set.
         /// </summary>
-        public string KeySet { get; set; }
+        public string? KeySet { get; set; }
 
         /// <summary>
         /// Issuer.
         /// </summary>
-        public string Issuer { get; set; }
+        public string? Issuer { get; set; }
     }
 }
 

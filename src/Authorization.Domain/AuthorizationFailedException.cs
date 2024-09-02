@@ -23,6 +23,11 @@ namespace Authorization.Domain
         public AuthorizationFailedReasonCode ReasonCode { get; set; }
 
         /// <summary>
+        /// Mfa required.
+        /// </summary>
+        public bool MfaRequired { get; set; }
+
+        /// <summary>
         /// Creates exception.
         /// </summary>
         public AuthorizationFailedException()
@@ -42,5 +47,3 @@ namespace Authorization.Domain
         }
     }
 }
-
-

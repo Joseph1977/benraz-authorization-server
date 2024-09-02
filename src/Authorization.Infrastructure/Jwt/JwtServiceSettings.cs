@@ -46,6 +46,11 @@ namespace Authorization.Infrastructure.Jwt
         /// Public key in PEM format for token signature verification.
         /// </summary>
         public string PublicKeyPem { get; set; }
+
+        /// <summary>
+        /// Confirm email JWT validity period.
+        /// </summary>
+        public TimeSpan ConfirmEmailValidityPeriod { get; set; }       
     }
 }
 

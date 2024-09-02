@@ -54,6 +54,15 @@ namespace Authorization.Infrastructure.Jwt
         /// </summary>
         /// <returns>Auth parameters.</returns>
         AuthParameters GetAuthParameters();
+
+        /// <summary>
+        /// Creates JWT token for validate mfa code operation.
+        /// </summary>
+        /// <param name="audience">Audience.</param>
+        /// <param name="claims">Claims to include into token.</param>
+        /// <param name="validityPeriod">Validity period.</param>
+        /// <returns>Token.</returns>
+        string CreateValidateMfaCodeToken(string audience, IEnumerable<Claim> claims, TimeSpan validityPeriod);
     }
 }
 

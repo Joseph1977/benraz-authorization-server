@@ -337,8 +337,6 @@ IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'RoleId', N'
 INSERT INTO [Roles] ([RoleId], [ConcurrencyStamp], [Name], [NormalizedName])
 VALUES (N'd7b4f6d4-9cab-49ce-abf2-c0bc6d5d1ae2', N'96fd1b42-0720-4de0-be3e-d51b5bb3476d', N'Employee', N'EMPLOYEE'),
 (N'd14a3723-2ca1-49b2-9d58-50220836053d', N'b1cc36c5-7958-450d-9363-70d81b4f02ab', N'Organization user', N'ORGANIZATION USER'),
-(N'25c5290f-91bc-4c47-ad4f-9fc01f6191cd', N'3cc4aba1-6b94-4af8-959d-e5cb3be30ace', N'Tenant', N'TENANT'),
-(N'f80e34a1-e155-4a87-b2d5-7d1367963343', N'bfb01b6e-d093-4e48-af66-08bcab57f9c2', N'Property manager', N'PROPERTY MANAGER'),
 (N'48aa65a2-dc1c-4ce9-bf07-ee4c05973e58', N'bbebc5db-8168-4ad1-8581-7d5e5d03d90f', N'Service provider', N'SERVICE PROVIDER'),
 (N'2ada0e62-3793-4d90-b635-80e334362e65', N'2e0b2011-c2f6-4837-8aa8-ff5c1aa79201', N'Owner', N'OWNER'),
 (N'c5b42e20-e5b0-4f5c-a968-dd0050e21070', N'2162f58e-8faf-4d89-9d1d-3feda66a0ee4', N'Partner', N'PARTNER'),

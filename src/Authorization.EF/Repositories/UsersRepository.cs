@@ -59,7 +59,22 @@ namespace Authorization.EF.Repositories
         /// <returns>User.</returns>
         public async Task<User> GetByIdAsync(string id)
         {
-            return await GetQuery().FirstOrDefaultAsync(x => x.Id == id);
+            return await GetQuery().Include(x => x.UserRoles)
+                .ThenInclude(x => x.Role)
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        /// <summary>
+        /// Get user by email.
+        /// </summary>
+        /// <param name="email">Email.</param>
+        /// <returns>User.</returns>
+        public async Task<User> GetByEmail(string email, bool? includeEmployee = false)
+        {
+            return await GetQuery(includeEmployee).Include(x => x.UserRoles)
+                .ThenInclude(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Email == email);
         }
 
         private IQueryable<User> ApplyFiltering(IQueryable<User> dbQuery, UsersQuery query)
@@ -148,11 +163,15 @@ namespace Authorization.EF.Repositories
             }
         }
 
-        private IQueryable<User> GetQuery()
+        private IQueryable<User> GetQuery(bool? includeEmployee = false)
         {
             var query = _dbContext.Users.AsQueryable();
 
             var principal = _principalService.GetPrincipal();
+
+            if (includeEmployee.HasValue && includeEmployee.Value) {
+                return query;
+            }
 
             var canReadEmployees = principal?.HasClaim(CommonClaimTypes.CLAIM, ApplicationClaims.EMPLOYEE_READ);
             if (canReadEmployees != true)

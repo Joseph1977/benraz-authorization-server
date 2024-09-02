@@ -1,8 +1,7 @@
-using Authorization.Domain.Applications;
 using Authorization.Domain.SsoConnections;
+using Authorization.WebApi.Models.Addresses;
 using Authorization.WebApi.Models.InternalLogin;
 using Authorization.WebApi.Models.Users;
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -21,6 +20,21 @@ namespace Authorization.WebApi.IntegrationTests
         public override async Task SetUpAsync()
         {
             await base.SetUpAsync();
+        }
+
+        [Test]
+#if !DEBUG
+        [Ignore("Ignore in production.")]
+#endif
+        public async Task CanSignUpAsync()
+        {
+            var signUpViewModel = SignUpViewModel();
+
+            var response = await SendAsync($"/v1/internal-login/sign-up", signUpViewModel);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var viewModel = await GetResponseAsync<UserOpenIdViewModel>(response);
+            viewModel.Email.Should().Be(signUpViewModel.Username);
         }
 
         [Test]
@@ -90,11 +104,11 @@ namespace Authorization.WebApi.IntegrationTests
             }
         }
 
-        private async Task<Application> AddDefaultApplicationAsync()
+        private async Task<Domain.Applications.Application> AddDefaultApplicationAsync()
         {
             using (var dbContext = CreateDbContext())
             {
-                var application = new Application
+                var application = new Domain.Applications.Application
                 {
                     Name = "Application-001",
                     Audience = "Audience-002"
@@ -118,7 +132,29 @@ namespace Authorization.WebApi.IntegrationTests
                 await dbContext.SaveChangesAsync();
             }
         }
+
+        private SignUpViewModel SignUpViewModel()
+        {
+            return new SignUpViewModel
+            {
+                Profile = "Profile test",
+                ZoneInfo = "Zone info test",
+                PhoneNumber = "0546546548",
+                FirstName = "First name test",
+                LastName = "Last name test",
+                NickName = "Nickname test",
+                SendConfirmationEmail = true,
+                Password = "1q2w3e$R",
+                Username = "Test@test.com",
+                Address = new AddressViewModel
+                {
+                    Country = "Country test",
+                    Locality = "Locality  test",
+                    PostalCode = "Post code test",
+                    Region = "Region test",
+                    StreetAddress = "Address test"
+                }
+            };
+        }
     }
 }
-
-

@@ -53,8 +53,10 @@ namespace Authorization.Domain
         /// <param name="applicationId">Application identifier.</param>
         /// <param name="accessToken">Access token.</param>
         /// <param name="returnUrl">Return URL.</param>
+        /// <param name="isMfaVerified">Is mfaVerified.</param>
+        /// <param name="provider">Provider.</param>
         /// <returns>Callback URL.</returns>
-        Task<string> CreateSuccessCallbackUrlAsync(Guid applicationId, string accessToken, string returnUrl);
+        Task<string> CreateSuccessCallbackUrlAsync(Guid applicationId, string accessToken, string returnUrl, bool? isMfaVerified = false, SsoProviderCode provider = SsoProviderCode.Internal);
 
         /// <summary>
         /// Creates and returns URL for callback with error.
@@ -63,6 +65,13 @@ namespace Authorization.Domain
         /// <param name="error">Error.</param>
         /// <returns>Callback URL.</returns>
         Task<string> CreateErrorCallbackUrlAsync(Guid applicationId, string error);
+
+        /// <summary>
+        /// Send user login email.
+        /// </summary>
+        /// <param name="username">User name.</param>
+        /// <returns>Task.</returns>
+        Task SendUserLoginEmailAsync(string username);
     }
 }
 

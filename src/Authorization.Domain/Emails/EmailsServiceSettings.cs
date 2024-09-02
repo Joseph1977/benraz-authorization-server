@@ -6,16 +6,6 @@ namespace Authorization.Domain.Emails
     public class EmailsServiceSettings
     {
         /// <summary>
-        /// Username.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        /// Password.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
         /// From email address.
         /// </summary>
         public string From { get; set; }
@@ -64,7 +54,10 @@ namespace Authorization.Domain.Emails
         /// Reset password email template identifier.
         /// </summary>
         public string ResetPasswordTemplateId { get; set; }
+
+        /// <summary>
+        /// Mfa code email subject.
+        /// </summary>
+        public string MfaCodeSubject { get; set; }
     }
 }
-
-

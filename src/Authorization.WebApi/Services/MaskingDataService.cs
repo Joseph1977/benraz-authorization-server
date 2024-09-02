@@ -10,7 +10,7 @@ namespace Authorization.WebApi.Services
         /// </summary>
         /// <param name="secret">Secret.</param>
         /// <returns>Masked secret.</returns>
-        public string HideSecret(string secret)
+        public string? HideSecret(string? secret)
         {
             return ApplyMasking(secret);
         }
@@ -22,12 +22,12 @@ namespace Authorization.WebApi.Services
         /// <param name="keepChars">Keep chars.</param>
         /// <param name="placeholders">Placeholders.</param>
         /// <returns>Masked secret.</returns>
-        public string HideSecret(string secret, int keepChars, string placeholders)
+        public string? HideSecret(string? secret, int keepChars, string? placeholders)
         {
             return ApplyMasking(secret, keepChars, placeholders);
         }
 
-        private string ApplyMasking(string secret, int keepChars = 3, string placeholders = "*****")
+        private string? ApplyMasking(string? secret, int keepChars = 3, string? placeholders = "*****")
         {
             if (string.IsNullOrEmpty(secret))
             {

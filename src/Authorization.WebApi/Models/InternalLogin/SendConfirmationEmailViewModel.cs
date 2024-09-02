@@ -11,7 +11,7 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// User identifier.
         /// </summary>
         [Required] 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
     }
 }
 

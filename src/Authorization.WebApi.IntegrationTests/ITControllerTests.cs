@@ -1,8 +1,6 @@
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Authorization.WebApi.IntegrationTests
@@ -23,5 +21,3 @@ namespace Authorization.WebApi.IntegrationTests
         }
     }
 }
-
-

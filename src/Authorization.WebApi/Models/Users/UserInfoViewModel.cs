@@ -11,17 +11,17 @@ namespace Authorization.WebApi.Models.Users
         /// <summary>
         /// Identifier.
         /// </summary>
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// Full name.
         /// </summary>
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         /// <summary>
         /// Email.
         /// </summary>
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// Is email confirmed.
@@ -31,7 +31,7 @@ namespace Authorization.WebApi.Models.Users
         /// <summary>
         /// Phone number.
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         
         /// <summary>
         /// Is phone number confirmed.

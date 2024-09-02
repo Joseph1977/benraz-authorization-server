@@ -1,5 +1,4 @@
 using Authorization.WebApi.Models.Roles;
-using ErpMaintenance.WebApi.IntegrationTests;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,3 +1,4 @@
+using Authorization.Application.Notifications;
 using Authorization.Domain;
 using Authorization.Domain.Applications;
 using Authorization.Domain.ApplicationTokens;
@@ -16,36 +17,36 @@ using Authorization.Infrastructure.Gateways.MicrosoftGraph;
 using Authorization.Infrastructure.Jwt;
 using Authorization.WebApi.Authorization;
 using Authorization.WebApi.Controllers;
+using Authorization.WebApi.Extensions;
 using Authorization.WebApi.Filtes;
 using Authorization.WebApi.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Benraz.Infrastructure.Authorization.Tokens;
 using Benraz.Infrastructure.Common.AccessControl;
-using Benraz.Infrastructure.Common.Configuration;
 using Benraz.Infrastructure.Common.DataRedundancy;
-using Benraz.Infrastructure.Gateways.BenrazAuthorization;
+using Benraz.Infrastructure.Emails;
 using Benraz.Infrastructure.Gateways.BenrazAuthorization.Auth;
-using Benraz.Infrastructure.Gateways.BenrazCommon;
 using Benraz.Infrastructure.Gateways.BenrazServices;
 using Benraz.Infrastructure.Web.Authorization;
 using Benraz.Infrastructure.Web.Filters;
-using Swashbuckle.AspNetCore.Filters;
+using Asp.Versioning.ApiExplorer;
 using System;
-using System.IO;
 using System.Reflection;
+using IEmailsService = Authorization.Domain.Emails.IEmailsService;
+using Asp.Versioning;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+
 
 namespace Authorization.WebApi
 {
@@ -74,6 +75,11 @@ namespace Authorization.WebApi
         /// <param name="services">Services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            if (IsEnablesApplicationInsights())
+            {
+                services.AddApplicationInsightsTelemetry();
+            }
+
             services.AddMvc(config =>
             {
                 config.Filters.Add<ErrorFilterAttribute>();
@@ -82,8 +88,7 @@ namespace Authorization.WebApi
             services.AddCors();
             services.AddHttpContextAccessor();
 
-            services.AddDbContext<AuthorizationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Authorization"), o => o.EnableRetryOnFailure(3)));
+            ConfigureSqlServerContext(services);
 
             services
                 .AddIdentityCore<User>(options =>
@@ -97,22 +102,49 @@ namespace Authorization.WebApi
                 .AddDefaultTokenProviders();
 
             services
-                .AddSingleton(provider => new MapperConfiguration(config =>
+                .AddSingleton(provider =>
                 {
-                    config.AddProfile(new AutoMapperProfile(provider.GetService<IMaskingDataService>()));
-                })
-                .CreateMapper());
+                    var maskingDataService = provider.GetService<IMaskingDataService>();
 
-            services
-                .AddControllers()
-                .AddApplicationPart(Assembly.GetAssembly(typeof(ITController)));
+                    var mapperConfig = new MapperConfiguration(config =>
+                    {
+                        if (maskingDataService != null)
+                        {
+                            config.AddProfile(new AutoMapperProfile(maskingDataService));
+                        }
+                        else
+                        {
+                            // Provide a fallback behavior or default profile
+                            config.AddProfile(new DefaultAutoMapperProfile());
+                        }
+                    });
+
+                    return mapperConfig.CreateMapper();
+                });
+
+            services.AddSingleton(provider =>
+            {
+                var maskingDataService = provider.GetService<IMaskingDataService>();
+                // Check if the maskingDataService is null
+                if (maskingDataService == null)
+                {
+                    throw new InvalidOperationException("IMaskingDataService is not registered in the DI container.");
+                }
+                var mapperConfig = new MapperConfiguration(config =>
+                                    {
+                                        config.AddProfile(new AutoMapperProfile(maskingDataService));
+                                    });
+
+                return mapperConfig.CreateMapper();
+            });
+
+            services.AddControllers()
+                .AddApplicationPart(Assembly.GetAssembly(typeof(ITController)) ?? throw new InvalidOperationException("Assembly containing ITController could not be found."));
+
 
             AddVersioning(services);
 
-            if (!IsSwaggerDisabled())
-            {
-                AddSwagger(services);
-            }
+            services.AddSwagger(Configuration);
 
             AddServices(services);
             AddAuthorization(services);
@@ -131,10 +163,24 @@ namespace Authorization.WebApi
         {
             app.UseCors(options =>
             {
-                options
-                    .WithOrigins(Configuration.GetValue<string>("AllowedHosts"))
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
+                var allowedHosts = Configuration.GetValue<string>("AllowedHosts");
+
+                if (!string.IsNullOrEmpty(allowedHosts))
+                {
+                    options
+                        .WithOrigins(allowedHosts)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
+                else
+                {
+                    // Handle the case where AllowedHosts is null or empty
+                    // You can either use AllowAnyOrigin or throw an exception, depending on your requirements
+                    options
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
             });
 
             // To be able to get the IP adderss by: Request.HttpContext.Connection.RemoteIpAddress
@@ -153,7 +199,7 @@ namespace Authorization.WebApi
                 app.UseHttpsRedirection();
             }
 
-            UseDatabaseMigrations(app);
+            UseDatabaseMigrationsAsync(app).GetAwaiter().GetResult();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -161,21 +207,35 @@ namespace Authorization.WebApi
 
             app.UseStaticFiles();
 
-            if (!IsSwaggerDisabled())
+            app.UseSwagger(apiVersionDescriptionProvider, Configuration);
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private bool IsEnablesApplicationInsights()
+        {
+            return Configuration.GetValue<bool>("EnablesApplicationInsights");
+        }
+
+        private void ConfigureSqlServerContext(IServiceCollection services)
+        {
+            string? connectionString = Configuration.GetConnectionString("Authorization");
+            if (IsInjectDbCredentialsToConnectionString())
             {
-                UseSwagger(app, apiVersionDescriptionProvider);
+                connectionString +=
+                    $";User Id={Environment.GetEnvironmentVariable("ASPNETCORE_DB_USERNAME")};Password={Environment.GetEnvironmentVariable("ASPNETCORE_DB_PASSWORD")}";
             }
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            services.AddDbContext<AuthorizationDbContext>(options =>
+                options.UseSqlServer(
+                    connectionString,
+                    o => o.EnableRetryOnFailure(3)
+                ));
         }
 
         private void AddServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddSingleton<IConfigurationManager, ConfigurationManager>();
 
             services.AddSingleton<IDrChecker, DrChecker>();
             services.AddScoped<DRFilterAttribute>();
@@ -228,6 +288,10 @@ namespace Authorization.WebApi
             services.AddTransient<IEmailsService, EmailsService>();
             services.Configure<EmailsServiceSettings>(Configuration.GetSection("Emails"));
 
+            services.AddTransient<IEmailsServiceProvider, EmailsServiceProvider>();
+            services.AddTransient<IEmailsNotificationFactory, EmailsNotificationFactory>();
+            services.Configure<EmailsServiceProviderSettings>(Configuration.GetSection("Emails:ServiceProvider"));
+
             services.AddTransient<IMicrosoftGraphGateway, MicrosoftGraphGateway>();
             services.Configure<MicrosoftGraphGatewaySettings>(Configuration.GetSection("MicrosoftGraph"));
 
@@ -235,10 +299,15 @@ namespace Authorization.WebApi
             services.Configure<FacebookGraphGatewaySettings>(Configuration.GetSection("FacebookGraphGateway"));
 
             services.AddTransient<IBenrazServicesGateway, BenrazServicesGateway>();
-            services.Configure<BenrazCommonGatewaySettings>(Configuration.GetSection("BenrazServices"));
 
             services.AddTransient<IMaskingDataService, MaskingDataService>();
             services.AddTransient<IUsageLogsService, UsageLogsService>();
+
+            services.Configure<UserServiceSettings>(Configuration.GetSection("User"));
+
+            services.Configure<UserActionNotificationsServiceSettings>(Configuration.GetSection("UserActionNotifications"));
+
+            services.AddTransient<IUserMfasRepository, UserMfasRepository>();
         }
 
         /// <summary>
@@ -260,8 +329,13 @@ namespace Authorization.WebApi
                 .AddJwtBearer(options =>
                 {
                     var serviceProvider = services.BuildServiceProvider();
-
                     var tokenValidationService = serviceProvider.GetRequiredService<ITokenValidationService>();
+
+                    // Switch to using TokenHandlers
+                    options.TokenHandlers.Clear();  // Clear existing handlers if any
+                    options.TokenHandlers.Add(new JwtSecurityTokenHandler());  // Add JwtSecurityTokenHandler for handling JWTs
+
+                    // Configure the TokenValidationParameters to specify how tokens should be validated
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ClockSkew = TimeSpan.FromMinutes(5),
@@ -270,25 +344,31 @@ namespace Authorization.WebApi
                         AudienceValidator = tokenValidationService.AudienceValidator,
                         ValidateIssuer = true,
                         IssuerValidator = tokenValidationService.IssuerValidator,
+
+                        // Include additional validation settings as needed
                     };
 
-                    var tokenValidator = serviceProvider.GetRequiredService<TokenValidator>();
-                    options.SecurityTokenValidators.Clear();
-                    options.SecurityTokenValidators.Add(tokenValidator);
+                    options.Audience = Configuration["Jwt:Audience"];
+                    options.Authority = Configuration["Jwt:Authority"];
+
                 });
+
             services
                 .AddAuthorization(options =>
                 {
                     options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_READ, ApplicationClaims.APPLICATION_READ);
                     options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_ADD, ApplicationClaims.APPLICATION_ADD);
-                    options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_UPDATE, ApplicationClaims.APPLICATION_UPDATE);
-                    options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_DELETE, ApplicationClaims.APPLICATION_DELETE);
+                    options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_UPDATE,
+                        ApplicationClaims.APPLICATION_UPDATE);
+                    options.AddClaimsPolicy(ApplicationPolicies.APPLICATION_DELETE,
+                        ApplicationClaims.APPLICATION_DELETE);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_READ, ApplicationClaims.USER_READ);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_ADD, ApplicationClaims.USER_ADD);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_UPDATE, ApplicationClaims.USER_UPDATE);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_DELETE, ApplicationClaims.USER_DELETE);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_STATUS_READ, ApplicationClaims.USER_STATUS_READ);
-                    options.AddClaimsPolicy(ApplicationPolicies.USER_STATUS_SUSPEND, ApplicationClaims.USER_STATUS_SUSPEND);
+                    options.AddClaimsPolicy(ApplicationPolicies.USER_STATUS_SUSPEND,
+                        ApplicationClaims.USER_STATUS_SUSPEND);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_STATUS_BLOCK, ApplicationClaims.USER_STATUS_BLOCK);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_UNLOCK, ApplicationClaims.USER_UNLOCK);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_ROLE_READ, ApplicationClaims.USER_ROLE_READ);
@@ -300,8 +380,10 @@ namespace Authorization.WebApi
                     options.AddClaimsPolicy(ApplicationPolicies.USER_EMAIL_VERIFY, ApplicationClaims.USER_EMAIL_VERIFY);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_PHONE_READ, ApplicationClaims.USER_PHONE_READ);
                     options.AddClaimsPolicy(ApplicationPolicies.USER_PHONE_VERIFY, ApplicationClaims.USER_PHONE_VERIFY);
-                    options.AddClaimsPolicy(ApplicationPolicies.USER_PASSWORD_UPDATE, ApplicationClaims.USER_PASSWORD_UPDATE);
-                    options.AddClaimsPolicy(ApplicationPolicies.USER_PASSWORD_RESET, ApplicationClaims.USER_PASSWORD_RESET);
+                    options.AddClaimsPolicy(ApplicationPolicies.USER_PASSWORD_UPDATE,
+                        ApplicationClaims.USER_PASSWORD_UPDATE);
+                    options.AddClaimsPolicy(ApplicationPolicies.USER_PASSWORD_RESET,
+                        ApplicationClaims.USER_PASSWORD_RESET);
                     options.AddClaimsPolicy(ApplicationPolicies.ROLE_READ, ApplicationClaims.ROLE_READ);
                     options.AddClaimsPolicy(ApplicationPolicies.ROLE_ADD, ApplicationClaims.ROLE_ADD);
                     options.AddClaimsPolicy(ApplicationPolicies.ROLE_UPDATE, ApplicationClaims.ROLE_UPDATE);
@@ -315,105 +397,50 @@ namespace Authorization.WebApi
                         {
                             builder.RequireAssertion(context =>
                                 context.User.HasClaim(CustomClaimTypes.IS_PASSWORD_EXPIRED, true.ToString()) ||
-                                context.User.HasClaim(CommonClaimTypes.CLAIM, ApplicationClaims.PROFILE_PASSWORD_CHANGE));
+                                context.User.HasClaim(CommonClaimTypes.CLAIM,
+                                    ApplicationClaims.PROFILE_PASSWORD_CHANGE));
                         });
-                    options.AddClaimsPolicy(ApplicationPolicies.INTERNAL_LOGIN_SET_PASSWORD, ApplicationClaims.PROFILE_PASSWORD_SET);
-                    options.AddClaimsPolicy(ApplicationPolicies.USER_READ_ONE, ApplicationClaims.USER_READ_ONE, ApplicationClaims.USER_READ);
+                    options.AddClaimsPolicy(ApplicationPolicies.INTERNAL_LOGIN_SET_PASSWORD,
+                        ApplicationClaims.PROFILE_PASSWORD_SET);
+                    options.AddClaimsPolicy(ApplicationPolicies.USER_READ_ONE, ApplicationClaims.USER_READ_ONE,
+                        ApplicationClaims.USER_READ);
                     options.AddClaimsPolicy(ApplicationPolicies.TOKEN_EXCHANGE, ApplicationClaims.TOKEN_EXCHANGE);
+                    options.AddClaimsPolicy(ApplicationPolicies.INTERNAL_LOGIN_MFA_TOKEN,
+                        ApplicationClaims.PROFILE_MFA_TOKEN);
                 });
         }
 
         private static void AddVersioning(IServiceCollection services)
         {
-            services.AddVersionedApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'VVV";
-                options.SubstituteApiVersionInUrl = true;
-            });
-
-            services.AddApiVersioning(options =>
+            var versioningBuilder = services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader(); // Use appropriate version reader
             });
-        }
 
-        private static void AddSwagger(IServiceCollection services)
-        {
-            services.AddSwaggerGen(options =>
+            // Add API Explorer for versioned APIs using the versioning builder
+            versioningBuilder.AddApiExplorer(options =>
             {
-                var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
-                }
-
-                options.OperationFilter<SwaggerDefaultValues>();
-                options.IncludeXmlComments(GetXmlCommentsFilePath());
-
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Name = "Authorization",
-                    Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
-                });
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
             });
         }
 
-        private void UseDatabaseMigrations(IApplicationBuilder app)
+        private async Task UseDatabaseMigrationsAsync(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<IMigrationService>().MigrateAsync().Wait();
+                var migrationService = scope.ServiceProvider.GetRequiredService<IMigrationService>();
+                await migrationService.MigrateAsync(); // Use await instead of .Wait()
             }
+            return;
         }
 
-        private void UseSwagger(IApplicationBuilder app, IApiVersionDescriptionProvider apiVersionDescriptionProvider)
+        private bool IsInjectDbCredentialsToConnectionString()
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint(
-                        $"{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                }
-            });
-        }
-
-        private bool IsSwaggerDisabled()
-        {
-            return Configuration.GetValue<bool>("DisableSwagger");
-        }
-
-        private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
-        {
-            var info = new OpenApiInfo
-            {
-                Title = $"Authorization {description.ApiVersion}",
-                Version = description.ApiVersion.ToString(),
-                Description = "Authorization service",
-                Contact = new OpenApiContact { Name = "Joseph Benraz" },
-            };
-
-            if (description.IsDeprecated)
-            {
-                info.Description += " This API version has been deprecated.";
-            }
-
-            return info;
-        }
-
-        private static string GetXmlCommentsFilePath()
-        {
-            var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-            var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
-            return Path.Combine(basePath, fileName);
+            return Configuration.GetValue<bool>("InjectDBCredentialFromEnvironment");
         }
     }
 }
-
-

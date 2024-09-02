@@ -12,14 +12,14 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// Reset password code.
         /// </summary>
         [Required]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
 
         /// <summary>
         /// The new password.
         /// </summary>
         [Required]
         [RegularExpression(UserPassword.PASSWORD_REGEX)]
-        public string NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
     }
 }
 

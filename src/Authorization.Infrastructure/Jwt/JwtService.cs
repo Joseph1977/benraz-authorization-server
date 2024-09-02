@@ -110,6 +110,27 @@ namespace Authorization.Infrastructure.Jwt
             return CreateToken(tokenDescriptor);
         }
 
+
+        /// <summary>
+        /// Creates JWT token for validate mfa code operation.
+        /// </summary>
+        /// <param name="audience">Audience.</param>
+        /// <param name="claims">Claims to include into token.</param>
+        /// <param name="validityPeriod">Validity period.</param>
+        /// <returns>Token.</returns>
+        public string CreateValidateMfaCodeToken(string audience, IEnumerable<Claim> claims, TimeSpan validityPeriod)
+        {
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Audience = audience,
+                Expires = DateTime.UtcNow.Add(validityPeriod),
+                Subject = new ClaimsIdentity(claims)
+            };
+            tokenDescriptor.Subject.AddClaim(new Claim(AUDIENCE_CLAIM_TYPE, _settings.SetPasswordAudience));
+
+            return CreateToken(tokenDescriptor);
+        }
+
         /// <summary>
         /// Returns public keys.
         /// </summary>

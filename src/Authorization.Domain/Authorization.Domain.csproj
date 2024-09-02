@@ -10,7 +10,8 @@
     <PackageReference Include="Benraz.Infrastructure.Authorization" Version="1.0.3" />
     <PackageReference Include="Benraz.Infrastructure.Common" Version="1.0.3" />
     <PackageReference Include="Benraz.Infrastructure.Domain" Version="1.0.3" />
-    <PackageReference Include="Benraz.Infrastructure.Gateways" Version="1.0.4" />
+    <PackageReference Include="Benraz.Infrastructure.Emails" Version="1.0.3" />
+    <PackageReference Include="Benraz.Infrastructure.Gateways" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,5 +19,3 @@
   </ItemGroup>
 
 </Project>
-
-

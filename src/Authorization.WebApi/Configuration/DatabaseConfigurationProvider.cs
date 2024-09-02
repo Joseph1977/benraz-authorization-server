@@ -3,6 +3,7 @@ using Authorization.EF.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Authorization.WebApi.Configuration
@@ -38,7 +39,8 @@ namespace Authorization.WebApi.Configuration
                 try
                 {
                     var settingsEntries = repository.GetAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    Data = settingsEntries.ToDictionary(x => x.Id, x => x.Value);
+                    IDictionary<string, string?> Data = settingsEntries.ToDictionary(x => x.Id, x => (string?)x.Value);
+
                 }
                 catch (Exception)
                 {

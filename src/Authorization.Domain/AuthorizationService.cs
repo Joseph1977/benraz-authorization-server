@@ -1,4 +1,5 @@
 using Authorization.Domain.Applications;
+using Authorization.Domain.Emails;
 using Authorization.Domain.SsoConnections;
 using Authorization.Domain.SsoServices;
 using Authorization.Domain.Users;
@@ -6,13 +7,13 @@ using Authorization.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MoreLinq;
 using Benraz.Infrastructure.Common.AccessControl;
 using Benraz.Infrastructure.Domain.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Authorization.Domain
@@ -25,12 +26,16 @@ namespace Authorization.Domain
         private readonly ISsoServiceProvider _ssoServiceProvider;
         private readonly IAccessTokenAuthenticationService _accessTokenAuthenticationService;
         private readonly IJwtService _jwtService;
+        private readonly IUsersService _usersService;
         private readonly IApplicationsRepository _applicationsRepository;
+        private readonly IUsersRepository _usersRepository;
         private readonly ISsoConnectionsService _ssoConnectionsService;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthorizationService> _logger;
         private readonly AuthorizationServiceSettings _settings;
+        private readonly IEmailsService _emailsService;
+        private readonly AuthorizationServiceSettings _authorizationServiceSettings;
 
         /// <summary>
         /// Creates service.
@@ -43,26 +48,36 @@ namespace Authorization.Domain
         /// <param name="userManager">User manager.</param>
         /// <param name="roleManager">Role manager.</param>
         /// <param name="logger">Logger.</param>
+        /// <param name="emailsService">Emails service.</param>
+        /// <param name="authorizationServiceSettings">Authorization service settings.</param>
         public AuthorizationService(
             ISsoServiceProvider ssoServiceProvider,
             IAccessTokenAuthenticationService accessTokenAuthenticationService,
             IJwtService jwtService,
+            IUsersService usersService,
             IApplicationsRepository applicationsRepository,
+            IUsersRepository usersRepository,
             ISsoConnectionsService ssoConnectionsService,
             UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<AuthorizationService> logger,
-            IOptions<AuthorizationServiceSettings> settings)
+            IOptions<AuthorizationServiceSettings> settings,
+            IEmailsService emailsService,
+            IOptions<AuthorizationServiceSettings> authorizationServiceSettings)
         {
             _ssoServiceProvider = ssoServiceProvider;
             _accessTokenAuthenticationService = accessTokenAuthenticationService;
             _jwtService = jwtService;
             _applicationsRepository = applicationsRepository;
+            _usersService = usersService;
+            _usersRepository = usersRepository;
             _ssoConnectionsService = ssoConnectionsService;
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
             _settings = settings.Value;
+            _emailsService = emailsService;
+            _authorizationServiceSettings = authorizationServiceSettings.Value;
         }
 
         /// <summary>
@@ -110,9 +125,14 @@ namespace Authorization.Domain
             try
             {
                 var ssoService = _ssoServiceProvider.GetSsoService(ssoConnection);
-                var ssoAuthorizationResult = await ssoService.AuthorizeAsync(ssoConnection, code);
 
+                _logger.LogInformation($"{nameof(ssoService.AuthorizeAsync)} process started.");
+                var ssoAuthorizationResult = await ssoService.AuthorizeAsync(ssoConnection, code);
+                _logger.LogInformation($"{nameof(ssoService.AuthorizeAsync)} process finished.");
+
+                _logger.LogInformation($"{nameof(ProcessSsoAuthorizationResultAsync)} started.");
                 var accessToken = await ProcessSsoAuthorizationResultAsync(application, ssoAuthorizationResult);
+                _logger.LogInformation($"{nameof(ProcessSsoAuthorizationResultAsync)} finished.");
 
                 return accessToken;
             }
@@ -193,7 +213,7 @@ namespace Authorization.Domain
         /// <param name="returnUrl">Return URL.</param>
         /// <returns>Callback URL.</returns>
         public async Task<string> CreateSuccessCallbackUrlAsync(
-            Guid applicationId, string accessToken, string returnUrl)
+            Guid applicationId, string accessToken, string returnUrl, bool? isMfaVerified = false, SsoProviderCode provider = SsoProviderCode.Internal)
         {
             var application = await GetApplicationAsync(applicationId);
             var callbackUrl = application.GetCallbackUrl();
@@ -213,6 +233,14 @@ namespace Authorization.Domain
             if (!string.IsNullOrEmpty(fragment))
             {
                 callbackUrl += $"{fragmentSign}{fragment}";
+            }
+
+            if (provider == SsoProviderCode.Internal)
+            {
+                if (_authorizationServiceSettings.IsMfaEnabled && isMfaVerified != true)
+                {
+                    AuthorizationFailed("MFA needed for login", "MFA needed");
+                }
             }
 
             return callbackUrl;
@@ -235,6 +263,16 @@ namespace Authorization.Domain
             return callbackUrl;
         }
 
+        /// <summary>
+        /// Send user login email.
+        /// </summary>
+        /// <param name="username">User name.</param>
+        public async Task SendUserLoginEmailAsync(string username)
+        {
+            var user = await _usersService.GetUserByEmailAsync(username, true);
+            await _emailsService.SendUserLoginEmailAsync(user);
+        }
+
         private async Task<Application> GetApplicationAsync(Guid applicationId)
         {
             var application = await _applicationsRepository.GetByIdAsync(applicationId);
@@ -252,7 +290,7 @@ namespace Authorization.Domain
             var ssoConnection = await _ssoConnectionsService.GetResultConnectionAsync(ssoProviderCode, application.Id);
             if (ssoConnection == null || !ssoConnection.IsEnabled)
             {
-                AuthorizationFailed($"Application {application.Name} does not support SSO provider {ssoProviderCode}.");
+                AuthorizationFailed($"Application {application.Name} does not support SSO provider {ssoProviderCode}.", ssoProviderCode: ssoProviderCode);
             }
 
             return ssoConnection;
@@ -293,7 +331,31 @@ namespace Authorization.Domain
             var user = await GetUserAsync(ssoAuthorizationResult.Claims);
             if (user == null)
             {
-                AuthorizationFailed($"Authorization failed for application {application.Name}: user not found.");
+                var email = GetUsernameFromClaims(ssoAuthorizationResult.Claims);
+                var userFullName = GetUserFullName(ssoAuthorizationResult.Claims);
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var newRegisterModel = new RegisterUserModel
+                    {
+                        FirstName = userFullName?.Split(' ')?.FirstOrDefault(),
+                        LastName = userFullName?.Split(' ')?.LastOrDefault(),
+                        Username = email,
+                        SendConfirmationEmail = false
+                    };
+                    var result = await _usersService.RegisterAsync(newRegisterModel);
+                    if (string.IsNullOrEmpty(result?.UserId))
+                    {
+                        AuthorizationFailed($"Authorization failed for application {application.Name}: user not found.");
+                    }
+                    user = await _usersRepository.GetByIdAsync(result?.UserId);
+
+                    user.EmailConfirmed = true;
+                    await _usersService.UpdateUserAsync(user, CancellationToken.None);
+                }
+                else
+                {
+                    AuthorizationFailed($"Authorization failed for application {application.Name}: user not found.");
+                }
             }
 
             if (!user.EmailConfirmed && !IsInAuthorizeUnconfirmedEmailPeriod(user))
@@ -346,10 +408,38 @@ namespace Authorization.Domain
                 return await _userManager.FindByIdAsync(userIdClaim.Value);
             }
 
+            var userName = GetUsernameFromClaims(ssoClaims);
+            if (!string.IsNullOrEmpty(userName))
+            {
+                return await _userManager.FindByEmailAsync(userName);
+            }
+
+            return null;
+        }
+
+        private string GetUsernameFromClaims(IEnumerable<Claim> ssoClaims)
+        {
             var emailClaim = ssoClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
             if (emailClaim != null)
             {
-                return await _userManager.FindByEmailAsync(emailClaim.Value);
+                return emailClaim.Value;
+            }
+
+            var uniqueNameClaim = ssoClaims.FirstOrDefault(x => x.Type == "unique_name");
+            if (uniqueNameClaim != null)
+            {
+                return uniqueNameClaim.Value;
+            }
+
+            return null;
+        }
+
+        private string GetUserFullName(IEnumerable<Claim> ssoClaims)
+        {
+            var fullName = ssoClaims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            if (fullName != null)
+            {
+                return fullName.Value;
             }
 
             return null;
@@ -410,13 +500,16 @@ namespace Authorization.Domain
             string reason = "Unable to authorize user",
             AuthorizationFailedReasonCode reasonCode = AuthorizationFailedReasonCode.Unknown,
             string userId = null,
-            LogLevel logLevel = LogLevel.Warning)
+            LogLevel logLevel = LogLevel.Warning,
+            SsoProviderCode ssoProviderCode = SsoProviderCode.Internal)
         {
             _logger.Log(logLevel, message);
 
             var exception = new AuthorizationFailedException(message, reason);
             exception.ReasonCode = reasonCode;
             exception.UserId = userId;
+            exception.MfaRequired = ssoProviderCode == SsoProviderCode.Internal ? _authorizationServiceSettings.IsMfaEnabled : false;
+
             throw exception;
         }
     }

@@ -96,7 +96,7 @@ namespace Authorization.WebApi.Controllers
         [ServiceFilter(typeof(DRFilterAttribute))]
         public async Task<IActionResult> PostRoleAsync([FromBody] RoleViewModel viewModel)
         {
-            if (await _roleManager.RoleExistsAsync(viewModel.Name))
+            if (string.IsNullOrWhiteSpace(viewModel.Name) || await _roleManager.RoleExistsAsync(viewModel.Name))
             {
                 return BadRequest("Role already exists.");
             }

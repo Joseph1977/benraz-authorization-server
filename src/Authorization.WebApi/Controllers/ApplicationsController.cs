@@ -70,7 +70,7 @@ namespace Authorization.WebApi.Controllers
         /// <returns>Application.</returns>
         [HttpGet("{id:Guid}")]
         [Authorize(ApplicationPolicies.APPLICATION_READ)]
-        [ProducesResponseType(typeof(Application), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Domain.Applications.Application), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetOneAsync([FromRoute] Guid id)
         {
@@ -101,7 +101,7 @@ namespace Authorization.WebApi.Controllers
                 return BadRequest();
             }
 
-            var application = _mapper.Map<Application>(viewModel);
+            var application = _mapper.Map<Domain.Applications.Application>(viewModel);
             application.CreatedBy = GetUserName();
             application.UpdatedBy = GetUserName();
             await _applicationsRepository.AddAsync(application);
@@ -260,11 +260,9 @@ namespace Authorization.WebApi.Controllers
             return NoContent();
         }
 
-        private string GetUserName()
+        private string? GetUserName()
         {
             return HttpContext.User?.Identity?.Name;
         }
     }
 }
-
-

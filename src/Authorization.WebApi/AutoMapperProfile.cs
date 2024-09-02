@@ -1,9 +1,11 @@
+using Authorization.Domain.Addresses;
 using Authorization.Domain.Applications;
 using Authorization.Domain.ApplicationTokens;
 using Authorization.Domain.Claims;
 using Authorization.Domain.SsoConnections;
 using Authorization.Domain.Users;
 using Authorization.Infrastructure.Jwt;
+using Authorization.WebApi.Models.Addresses;
 using Authorization.WebApi.Models.Applications;
 using Authorization.WebApi.Models.Auth;
 using Authorization.WebApi.Models.Claims;
@@ -21,6 +23,14 @@ using System.Security.Claims;
 
 namespace Authorization.WebApi
 {
+    class DefaultAutoMapperProfile : Profile
+    {
+        public DefaultAutoMapperProfile()
+        {
+            // Define default mappings or leave empty if no default mappings are needed
+        }
+    }
+
     class AutoMapperProfile : Profile
     {
         private readonly IMaskingDataService _maskingDataService;
@@ -36,11 +46,16 @@ namespace Authorization.WebApi
             CreateUsersMaps();
             CreateRolesMaps();
             CreateClaimsMaps();
+            CreateAddressMaps();
         }
-
         private void CreateCommonMaps()
         {
             CreateMap(typeof(Page<>), typeof(Page<>));
+        }
+
+        private void CreateAddressMaps()
+        {
+            CreateMap<AddressViewModel, Address>().ReverseMap();
         }
 
         private void CreateInternalLoginMaps()
@@ -58,7 +73,7 @@ namespace Authorization.WebApi
 
         private void CreateApplicationsMaps()
         {
-            CreateMap<Application, ApplicationViewModel>()
+            CreateMap<Domain.Applications.Application, ApplicationViewModel>()
                 .ForMember(x => x.CreateTimeUtc, o => o.MapFrom(x => SpecifyUtc(x.CreateTimeUtc)))
                 .ForMember(x => x.UpdateTimeUtc, o => o.MapFrom(x => SpecifyUtc(x.UpdateTimeUtc)))
                 .ReverseMap()
@@ -106,6 +121,18 @@ namespace Authorization.WebApi
             CreateMap<ChangeUserViewModel, User>();
 
             CreateMap<Claim, UserClaimViewModel>().ReverseMap();
+
+            CreateMap<User, UserOpenIdViewModel>()
+                .ForMember(x => x.UserId, o => o.MapFrom(x => x.Id))
+                .ForMember(x => x.FullName, o => o.MapFrom(x => x.FullName))
+                .ForMember(x => x.GivenName, o => o.MapFrom(x => x.FullName.Split()[0]))
+                .ForMember(x => x.FamilyName, o => o.MapFrom(x => x.FullName))
+                .ForMember(x => x.Email, o => o.MapFrom(x => x.Email))
+                .ForMember(x => x.EmailVerified, o => o.MapFrom(x => x.EmailConfirmed))
+                .ForMember(x => x.PhoneNumber, o => o.MapFrom(x => x.PhoneNumber))
+                .ForMember(x => x.PhoneNumberVerified, o => o.MapFrom(x => x.PhoneNumberConfirmed))
+                .ForMember(x=>x.Address,o=>o.MapFrom(x=>x.Address))
+                .ForMember(x => x.Roles, o => o.MapFrom(x => x.UserRoles.Select(x => x.Role.Name)));
         }
 
         private void CreateRolesMaps()
@@ -128,5 +155,3 @@ namespace Authorization.WebApi
         }
     }
 }
-
-

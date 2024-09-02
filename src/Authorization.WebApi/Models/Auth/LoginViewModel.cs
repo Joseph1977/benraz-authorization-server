@@ -21,7 +21,7 @@ namespace Authorization.WebApi.Models.Auth
         /// <summary>
         /// URL to be included into final redirect as a parameter.
         /// </summary>
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }
 
