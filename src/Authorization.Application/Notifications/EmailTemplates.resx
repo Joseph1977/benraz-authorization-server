@@ -1,0 +1,980 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Confirmation" xml:space="preserve">
+    <value>@model dynamic
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" /&gt;
+  &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge" /&gt;
+
+  &lt;style type="text/css"&gt;
+    body,
+    p,
+    div {
+      font-family: lucida sans unicode, lucida grande, sans-serif;
+      font-size: 16px;
+	  direction: ltr;
+    }
+
+    body {
+      color: #363636;
+    }
+
+    body a {
+      color: #1188E6;
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    table.wrapper {
+      width: 100% !important;
+      table-layout: fixed;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    img.max-width {
+      max-width: 100% !important;
+    }
+
+    .column.of-2 {
+      width: 50%;
+    }
+
+    .column.of-3 {
+      width: 33.333%;
+    }
+
+    .column.of-4 {
+      width: 25%;
+    }
+	
+    @@media screen and (max-width:480px) {
+
+      .preheader .rightColumnContent,
+      .footer .rightColumnContent {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent div,
+      .preheader .rightColumnContent span,
+      .footer .rightColumnContent div,
+      .footer .rightColumnContent span {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent,
+      .preheader .leftColumnContent {
+        font-size: 80% !important;
+        padding: 5px 0;
+      }
+
+      table.wrapper-mobile {
+        width: 100% !important;
+        table-layout: fixed;
+      }
+
+      img.max-width {
+        height: auto !important;
+        max-width: 480px !important;
+      }
+
+      a.bulletproof-button {
+        display: block !important;
+        width: auto !important;
+        font-size: 80%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .columns {
+        width: 100% !important;
+      }
+
+      .column {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;center class="wrapper" data-link-color="#1188E6"
+    data-body-style="font-size: 16px; font-family: lucida sans unicode,lucida grande,sans-serif; color: #363636; background-color: #f9f9f9;"&gt;
+    &lt;div class="webkit"&gt;
+      &lt;table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#f9f9f9"&gt;
+        &lt;tr&gt;
+          &lt;td valign="top" bgcolor="#f9f9f9" width="100%"&gt;
+            &lt;table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0"
+              border="0"&gt;
+              &lt;tr&gt;
+                &lt;td width="100%"&gt;
+                  &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+                    &lt;tr&gt;
+                      &lt;td&gt;
+                        &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"
+                          style="width: 100%; max-width:600px;" align="center"&gt;
+                          &lt;tr&gt;
+                            &lt;td role="modules-container"
+                              style="padding: 0px 10px 0px 10px; color: #363636; text-align: left;" bgcolor="#ffffff"
+                              width="100%" align="left"&gt;
+
+							  &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+                                    Hi @Model.UserFullName,
+                                    &lt;br&gt;
+                                    &lt;div style="padding-top: 12px;"&gt;
+										Thank you for registering with us. You’re one step closer to quicker, easier, business-friendly logistics.
+									&lt;/div&gt;
+									&lt;div style="padding-top: 12px;"&gt;
+										To get started, simply click on the link below and follow the instructions in your account.
+									&lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+
+		                         &lt;table width="100%" cellspacing="0" cellpadding="0"&gt;
+                                    &lt;tr&gt;
+                                        &lt;td&gt;
+                                          &lt;table cellspacing="0" cellpadding="0"&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="border-radius: 20px;" bgcolor="#6e3df7"&gt;
+                                                  &lt;a href="@Model.ConfirmEmailLink" target="_blank" style="padding: 8px 12px; border: 0px solid #ffffff;border-radius: 20px;font-family:arial,helvetica,sans-serif;font-size: 16px; color: #ffffff;text-decoration: none;font-weight:normal;display: inline-block; padding:12px 18px 12px 18px;"&gt;
+                                                      Confirm email and log on             
+                                                  &lt;/a&gt;
+                                            &lt;/td&gt;
+                                       &lt;/tr&gt;
+                                    &lt;/table&gt;
+                                   &lt;/td&gt;
+                                 &lt;/tr&gt;
+                              &lt;/table&gt;
+								
+                              &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+                                    &lt;div style="font-weight: bold;"&gt;
+                                      @Model.CompanyName
+                                    &lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+                            &lt;/td&gt;
+                          &lt;/tr&gt;
+                        &lt;/table&gt;
+                      &lt;/td&gt;
+                    &lt;/tr&gt;
+                  &lt;/table&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>@model dynamic
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+		&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" /&gt;
+  &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge" /&gt;
+
+  &lt;style type="text/css"&gt;
+    body,
+    p,
+    div {
+      font-family: lucida sans unicode, lucida grande, sans-serif;
+      font-size: 16px;
+	  direction: ltr;
+    }
+
+    body {
+      color: #363636;
+    }
+
+    body a {
+      color: #1188E6;
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    table.wrapper {
+      width: 100% !important;
+      table-layout: fixed;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    img.max-width {
+      max-width: 100% !important;
+    }
+
+    .column.of-2 {
+      width: 50%;
+    }
+
+    .column.of-3 {
+      width: 33.333%;
+    }
+
+    .column.of-4 {
+      width: 25%;
+    }
+	
+    @@media screen and (max-width:480px) {
+
+      .preheader .rightColumnContent,
+      .footer .rightColumnContent {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent div,
+      .preheader .rightColumnContent span,
+      .footer .rightColumnContent div,
+      .footer .rightColumnContent span {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent,
+      .preheader .leftColumnContent {
+        font-size: 80% !important;
+        padding: 5px 0;
+      }
+
+      table.wrapper-mobile {
+        width: 100% !important;
+        table-layout: fixed;
+      }
+
+      img.max-width {
+        height: auto !important;
+        max-width: 480px !important;
+      }
+
+      a.bulletproof-button {
+        display: block !important;
+        width: auto !important;
+        font-size: 80%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .columns {
+        width: 100% !important;
+      }
+
+      .column {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;center class="wrapper" data-link-color="#1188E6"
+    data-body-style="font-size: 16px; font-family: lucida sans unicode,lucida grande,sans-serif; color: #363636; background-color: #f9f9f9;"&gt;
+    &lt;div class="webkit"&gt;
+      &lt;table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#f9f9f9"&gt;
+        &lt;tr&gt;
+          &lt;td valign="top" bgcolor="#f9f9f9" width="100%"&gt;
+            &lt;table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0"
+              border="0"&gt;
+              &lt;tr&gt;
+                &lt;td width="100%"&gt;
+                  &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+                    &lt;tr&gt;
+                      &lt;td&gt;
+                        &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"
+                          style="width: 100%; max-width:600px;" align="center"&gt;
+                          &lt;tr&gt;
+                            &lt;td role="modules-container"
+                              style="padding: 0px 10px 0px 10px; color: #363636; text-align: left;" bgcolor="#ffffff"
+                              width="100%" align="left"&gt;
+
+							  &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+                                    Hi @Model.UserFullName,
+                                    &lt;div style="padding-top: 12px;"&gt;
+										We have recently received a request from you to set the password for your Benraz account.
+									&lt;/div&gt;
+									&lt;div style="padding-top: 12px;"&gt;
+										If this is not the case, please disregard this email.
+									&lt;/div&gt;
+									&lt;div style="padding-top: 12px;"&gt;
+										If you would like to set your password, simply click the link below.
+									&lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+
+		                         &lt;table width="100%" cellspacing="0" cellpadding="0" style="padding-top: 16px;"&gt;
+                                    &lt;tr&gt;
+                                        &lt;td&gt;
+                                          &lt;table cellspacing="0" cellpadding="0"&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="border-radius: 20px;" bgcolor="#6e3df7"&gt;
+                                                  &lt;a href="@Model.ResetPasswordLink" target="_blank" style="padding: 10px 16px; border: 0px solid #ffffff;border-radius: 20px;font-family:arial,helvetica,sans-serif;font-size: 16px; color: #ffffff;text-decoration: none;font-weight:normal;display: inline-block;"&gt;
+                                                      Set your password             
+                                                  &lt;/a&gt;
+                                            &lt;/td&gt;                                               
+                                       &lt;/tr&gt;
+                                    &lt;/table&gt;
+                                   &lt;/td&gt;
+                                 &lt;/tr&gt;
+                              &lt;/table&gt;
+								
+                              &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+                                    &lt;div style="font-weight: bold;"&gt;
+                                      @Model.CompanyName
+                                    &lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+                            &lt;/td&gt;
+                          &lt;/tr&gt;
+                        &lt;/table&gt;
+                      &lt;/td&gt;
+                    &lt;/tr&gt;
+                  &lt;/table&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/center&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</value>
+  </data>
+  <data name="MfaCode" xml:space="preserve">
+    <value>@model dynamic
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+		&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" /&gt;
+  &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge" /&gt;
+
+  &lt;style type="text/css"&gt;
+    body,
+    p,
+    div {
+      font-family: lucida sans unicode, lucida grande, sans-serif;
+      font-size: 16px;
+	  direction: ltr;
+    }
+
+    body {
+      color: #363636;
+    }
+
+    body a {
+      color: #1188E6;
+      text-decoration: none;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    table.wrapper {
+      width: 100% !important;
+      table-layout: fixed;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    img.max-width {
+      max-width: 100% !important;
+    }
+
+    .column.of-2 {
+      width: 50%;
+    }
+
+    .column.of-3 {
+      width: 33.333%;
+    }
+
+    .column.of-4 {
+      width: 25%;
+    }
+	
+    @@media screen and (max-width:480px) {
+
+      .preheader .rightColumnContent,
+      .footer .rightColumnContent {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent div,
+      .preheader .rightColumnContent span,
+      .footer .rightColumnContent div,
+      .footer .rightColumnContent span {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent,
+      .preheader .leftColumnContent {
+        font-size: 80% !important;
+        padding: 5px 0;
+      }
+
+      table.wrapper-mobile {
+        width: 100% !important;
+        table-layout: fixed;
+      }
+
+      img.max-width {
+        height: auto !important;
+        max-width: 480px !important;
+      }
+
+      a.bulletproof-button {
+        display: block !important;
+        width: auto !important;
+        font-size: 80%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .columns {
+        width: 100% !important;
+      }
+
+      .column {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;center class="wrapper" data-link-color="#1188E6"
+    data-body-style="font-size: 16px; font-family: lucida sans unicode,lucida grande,sans-serif; color: #363636; background-color: #f9f9f9;"&gt;
+    &lt;div class="webkit"&gt;
+      &lt;table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#f9f9f9"&gt;
+        &lt;tr&gt;
+          &lt;td valign="top" bgcolor="#f9f9f9" width="100%"&gt;
+            &lt;table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0"
+              border="0"&gt;
+              &lt;tr&gt;
+                &lt;td width="100%"&gt;
+                  &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+                    &lt;tr&gt;
+                      &lt;td&gt;
+                        &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"
+                          style="width: 100%; max-width:600px;" align="center"&gt;
+                          &lt;tr&gt;
+                            &lt;td role="modules-container"
+                              style="padding: 0px 10px 0px 10px; color: #363636; text-align: left;" bgcolor="#ffffff"
+                              width="100%" align="left"&gt;
+
+		                      &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+                                    &lt;div style="font-weight: bold; font-size: 25px; color: #6e3df7;"&gt;
+                                      @Model.ActionTitle code
+                                    &lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+							  
+							  &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed;"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
+                                    height="100%" valign="top" bgcolor=""&gt;
+									 &lt;div&gt;
+                                         Hi @Model.UserFullName,
+									&lt;/div&gt;
+									 &lt;br&gt;
+                                    &lt;div&gt;
+										To continue access 
+										&lt;span style="font-weight: bold; text-transform: uppercase"&gt;Benraz&lt;/span&gt;'s
+										apps and resources, please use the code below for @Model.ActionTitleLC. The code will only work for @Model.VerificationCodeCooldown minutes.
+									&lt;/div&gt;
+									 &lt;br&gt;
+									&lt;div&gt;
+										@Model.ActionTitle code:
+									&lt;/div&gt;
+									&lt;div style="font-weight: bold;"&gt;
+									    @Model.VerificationCode
+									&lt;/div&gt;
+									 &lt;br&gt;
+									&lt;div&gt;
+										If you didn't request a code, you can ignore this email.
+									&lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+							  
+                            &lt;/td&gt;
+                          &lt;/tr&gt;
+                        &lt;/table&gt;
+                      &lt;/td&gt;
+                    &lt;/tr&gt;
+                  &lt;/table&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/center&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</value>
+  </data>
+  <data name="UserLogin" xml:space="preserve">
+    <value>@model dynamic
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" /&gt;
+  &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge" /&gt;
+
+  &lt;style type="text/css"&gt;
+    body,
+    p,
+    div {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      direction: ltr;
+    }
+
+    body {
+      color: #363636;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    button {
+      background-color: #6e3df7;
+      border: none;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 18px;
+      border-radius: 56px;
+    }
+
+    .title {
+      padding: 0px 0px 25px 0px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    table.wrapper {
+      width: 100% !important;
+      table-layout: fixed;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    img.max-width {
+      max-width: 100% !important;
+    }
+
+    .column.of-2 {
+      width: 50%;
+    }
+
+    .column.of-3 {
+      width: 33.333%;
+    }
+
+    .column.of-4 {
+      width: 25%;
+    }
+
+    .search-quotes-btn {
+      border-radius: 20px;
+      -webkit-border-radius: 20px;
+      -ms-border-radius: 20px;
+      -moz-border-radius: 20px;
+    }
+
+    .user-login-summary-wrapper {
+      font-family: 'Poppins', sans-serif;
+      background: #f8f8f9;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .user-login-summary-wrapper .user-login-summary-title {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      color: #787e8e;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      margin-bottom: 16px;
+    }
+
+    .user-login-summary-detailes-wrapper {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+
+    .summaryleft-text {
+      width: 30%;
+    }
+
+    .summaryright-text {
+      font-family: 'Poppins', sans-serif;
+      width: 70%;
+      display: flex;
+      align-items: center;
+    }
+
+    .summaryright-text h6 {
+      font-family: 'Poppins', sans-serif;
+      color: #24262e;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      font-size: 16px;
+      margin: 0 0 0 15px;
+    }
+
+    @@media screen and (max-width:480px) {
+
+      .preheader .rightColumnContent,
+      .footer .rightColumnContent {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent div,
+      .preheader .rightColumnContent span,
+      .footer .rightColumnContent div,
+      .footer .rightColumnContent span {
+        text-align: left !important;
+      }
+
+      .preheader .rightColumnContent,
+      .preheader .leftColumnContent {
+        font-size: 80% !important;
+        padding: 5px 0;
+      }
+
+      table.wrapper-mobile {
+        width: 100% !important;
+        table-layout: fixed;
+      }
+
+      img.max-width {
+        height: auto !important;
+        max-width: 480px !important;
+      }
+
+      a.bulletproof-button {
+        display: block !important;
+        width: auto !important;
+        font-size: 80%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .columns {
+        width: 100% !important;
+      }
+
+      .column {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;center class="wrapper" data-link-color="#1188E6"
+    data-body-style="font-size: 16px; font-family: Arial, Helvetica, sans-serif; color: #363636; background-color: #f9f9f9;"&gt;
+    &lt;div class="webkit"&gt;
+      &lt;table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#f9f9f9"&gt;
+        &lt;tr&gt;
+          &lt;td valign="top" bgcolor="#f9f9f9" width="100%"&gt;
+            &lt;table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0"
+              border="0"&gt;
+              &lt;tr&gt;
+                &lt;td width="100%"&gt;
+                  &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;
+                    &lt;tr&gt;
+                      &lt;td&gt;
+                        &lt;table width="100%" cellpadding="0" cellspacing="0" border="0"
+                          style="width: 100%; max-width: 600px" align="center" style="
+                              table-layout: fixed;
+                              margin: 0 auto;
+                              width: auto;
+                            "&gt;
+                          &lt;tr&gt;
+                            &lt;td role="modules-container" style="
+                                  padding: 0px 10px 0px 10px;
+                                  color: #363636;
+                                  text-align: left;
+                                " bgcolor="#ffffff" width="100%" align="left"&gt;
+                              &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="
+                                        padding: 18px 0px 18px 0px;
+                                        line-height: 22px;
+                                        text-align: inherit;
+                                      " height="100%" valign="top" bgcolor=""&gt;
+                                    &lt;div class="title" style="
+                                          font-size: 22px;
+                                          padding: 0px 0px 25px 0px;
+                                        "&gt;
+                                      Login user notification
+                                    &lt;/div&gt;
+                                    &lt;div style="font-size: 16px"&gt;
+                                      Below user is logged in at
+                                      @Model.CreateTimeUtc.
+                                    &lt;/div&gt;
+                                    &lt;br /&gt;
+                                    &lt;div class="user-login-summary-wrapper"&gt;
+                                      &lt;span class="user-login-summary-title"&gt;&lt;b&gt;
+                                          Logged in User's information
+                                        &lt;/b&gt;&lt;/span&gt;
+                                      &lt;div class="user-login-summary-detailes-wrapper"&gt;
+                                        &lt;div class="summaryleft-text"&gt;
+                                          &lt;span&gt;User Email&lt;/span&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class="summaryright-text"&gt;
+                                          &lt;span class="content-icon"&gt; &lt;/span&gt;
+                                          &lt;h6&gt;@Model.UserName&lt;/h6&gt;
+                                        &lt;/div&gt;
+                                      &lt;/div&gt;
+                                      &lt;div class="user-login-summary-detailes-wrapper"&gt;
+                                        &lt;div class="summaryleft-text"&gt;
+                                          &lt;span&gt;User Name&lt;/span&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class="summaryright-text"&gt;
+                                          &lt;span class="content-icon"&gt; &lt;/span&gt;
+                                          &lt;h6&gt;@Model.FullName&lt;/h6&gt;
+                                        &lt;/div&gt;
+                                      &lt;/div&gt;
+                                    &lt;/div&gt;
+                                  &lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+
+                              &lt;table class="module" role="module" data-type="text" border="0" cellpadding="0"
+                                cellspacing="0" width="100%" style="table-layout: fixed"&gt;
+                                &lt;tr&gt;
+                                  &lt;td style="
+                                        padding: 5px 0px 18px 0px;
+                                        line-height: 22px;
+                                        text-align: inherit;
+                                      " height="100%" valign="top" bgcolor=""&gt;&lt;/td&gt;
+                                &lt;/tr&gt;
+                              &lt;/table&gt;
+                            &lt;/td&gt;
+                          &lt;/tr&gt;
+                        &lt;/table&gt;
+                      &lt;/td&gt;
+                    &lt;/tr&gt;
+                  &lt;/table&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/center&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</value>
+  </data>
+</root>
