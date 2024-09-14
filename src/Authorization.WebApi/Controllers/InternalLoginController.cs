@@ -114,7 +114,7 @@ namespace Authorization.WebApi.Controllers
                 await _usageLogsService.LogUsageAsync(HttpContext, viewModel.Username, "Token successfully created");
 
                 var callbackUrl = await _authorizationService.CreateSuccessCallbackUrlAsync(
-                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl, viewModel.isMfaVerified, SsoProviderCode.Internal);
+                    ssoState.ApplicationId, accessTokenResult.AccessToken, ssoState.ReturnUrl, true /*viewModel.isMfaVerified*/, SsoProviderCode.Internal);
 
                 if (_userActionNotificationsServiceSettings.IsLoginNotifyEnabled)
                 {

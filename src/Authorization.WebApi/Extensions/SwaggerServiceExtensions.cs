@@ -33,6 +33,7 @@ namespace Authorization.WebApi.Extensions
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
                     options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+                    options.SchemaFilter<EnumSchemaFilter>(); // Add this line to register the custom schema filter
                 }
 
                 options.OperationFilter<SwaggerDefaultValues>();
