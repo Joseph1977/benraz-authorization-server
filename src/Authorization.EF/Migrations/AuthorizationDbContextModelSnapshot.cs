@@ -768,7 +768,7 @@ namespace Authorization.EF.Migrations
                         {
                             Id = "Authorization:MfaCodeLength",
                             Description = "Mfa code length",
-                            Value = "8"
+                            Value = "6"
                         },
                         new
                         {
