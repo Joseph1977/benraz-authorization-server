@@ -24,11 +24,6 @@ namespace Authorization.WebApi.Models.InternalLogin
         /// </summary>
         [Required]
         public string Password { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Is mfa verified.
-        /// </summary>
-        public bool? isMfaVerified { get; set; }
     }
 }
 
