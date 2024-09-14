@@ -38,7 +38,7 @@ namespace Authorization.EF.Migrations
                 values: new object[,]
                 {
                     { "Authorization:AccessTokenMfaCodeLength", "Access token code length", "10" },
-                    { "Authorization:MfaCodeLength", "Mfa code length", "8" },
+                    { "Authorization:MfaCodeLength", "Mfa code length", "6" },
                     { "Emails:MfaCodeSubject", "Account verification code email subject", "Account verification" },
                     { "Jwt:ConfirmEmailValidityPeriod", null, "1.00:00:00" }
                 });
