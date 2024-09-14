@@ -39,8 +39,7 @@ namespace Authorization.WebApi.Configuration
                 try
                 {
                     var settingsEntries = repository.GetAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    IDictionary<string, string?> Data = settingsEntries.ToDictionary(x => x.Id, x => (string?)x.Value);
-
+                    Data = settingsEntries.ToDictionary(x => x.Id, x => x.Value);
                 }
                 catch (Exception)
                 {
