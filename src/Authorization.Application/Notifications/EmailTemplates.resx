@@ -272,7 +272,7 @@
                                         &lt;td&gt;
                                           &lt;table cellspacing="0" cellpadding="0"&gt;
                                             &lt;tr&gt;
-                                                &lt;td style="border-radius: 20px;" bgcolor="#6e3df7"&gt;
+                                                &lt;td style="border-radius: 20px;" bgcolor="#0d6efd"&gt;
                                                   &lt;a href="@Model.ConfirmEmailLink" target="_blank" style="padding: 8px 12px; border: 0px solid #ffffff;border-radius: 20px;font-family:arial,helvetica,sans-serif;font-size: 16px; color: #ffffff;text-decoration: none;font-weight:normal;display: inline-block; padding:12px 18px 12px 18px;"&gt;
                                                       Confirm email and log on             
                                                   &lt;/a&gt;
@@ -468,7 +468,7 @@
                                         &lt;td&gt;
                                           &lt;table cellspacing="0" cellpadding="0"&gt;
                                             &lt;tr&gt;
-                                                &lt;td style="border-radius: 20px;" bgcolor="#6e3df7"&gt;
+                                                &lt;td style="border-radius: 20px;" bgcolor="#0d6efd"&gt;
                                                   &lt;a href="@Model.ResetPasswordLink" target="_blank" style="padding: 10px 16px; border: 0px solid #ffffff;border-radius: 20px;font-family:arial,helvetica,sans-serif;font-size: 16px; color: #ffffff;text-decoration: none;font-weight:normal;display: inline-block;"&gt;
                                                       Set your password             
                                                   &lt;/a&gt;
@@ -646,7 +646,7 @@
                                 &lt;tr&gt;
                                   &lt;td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;"
                                     height="100%" valign="top" bgcolor=""&gt;
-                                    &lt;div style="font-weight: bold; font-size: 25px; color: #6e3df7;"&gt;
+                                    &lt;div style="font-weight: bold; font-size: 25px; color: #0d6efd;"&gt;
                                       @Model.ActionTitle code
                                     &lt;/div&gt;
                                   &lt;/td&gt;
@@ -729,7 +729,7 @@
     }
 
     button {
-      background-color: #6e3df7;
+      background-color: #0d6efd;
       border: none;
       display: flex;
       flex-direction: row;
