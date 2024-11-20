@@ -3,6 +3,7 @@
 --user name: admin@admin.com
 --password: Qwerty001!
 
+declare @PreDefineUserID NVARCHAR(36) = 'D5069819-1256-4AEF-9341-2628237C8EE6'
 declare @ApplicationID NVARCHAR(36) = 'D5069819-1256-4AEF-9341-2628237C8EE6'
 declare @Name NVARCHAR(36) = 'Authorization'
 declare @Audience NVARCHAR(36) = 'Authorization'
@@ -72,11 +73,13 @@ GO
 DROP TABLE if exists ##global_var
  
 CREATE TABLE ##global_var 
-             (Email NVARCHAR(36)
+             (UserId NVARCHAR(36)
+             ,Email NVARCHAR(36)
              ,Name NVARCHAR(36))
 
 INSERT INTO ##global_var 
-    VALUES   ('admin@admin.com' -- user email
+    VALUES   (@PreDefineUserID
+             ,'admin@admin.com' -- user email
              ,'Admin benraz') -- user full name
 			 
 --  'Your password will be Qwerty001!'
@@ -101,7 +104,7 @@ INSERT INTO [dbo].[Users]
            ,[FullName]
            ,[CreateTimeUtc])
      VALUES
-           (NEWID()
+           ((SELECT UserId FROM ##global_var)
            ,Lower((SELECT Email FROM ##global_var))
            ,UPPER((SELECT Email FROM ##global_var))
            ,Lower((SELECT Email FROM ##global_var))
@@ -126,7 +129,7 @@ INSERT INTO [dbo].[UserRoles]
            ([UserId]
            ,[RoleId])
      VALUES
-           ((SELECT [UserId] FROM [dbo].[Users] WHERE [Email] = Lower((SELECT Email FROM ##global_var)))
+           ((SELECT UserId FROM ##global_var)
            ,'89117c41-23b9-4330-ada1-57464fc84aa0')
 GO
 
